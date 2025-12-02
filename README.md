@@ -5,7 +5,6 @@
 ```bash
 # Start React (port 4000)
 npm run dev
-npm run build # Prod
 
 ```
 
