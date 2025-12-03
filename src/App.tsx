@@ -3,31 +3,67 @@ import type { FormEvent } from 'react'
 
 type Message = {
   id: number
+  role: 'user' | 'assistant'
   text: string
 }
 
 function App() {
-  // State to hold the list of messages & Values in text box
+  // States
   const [messages, setMessages] = useState<Message[]>([])
   const [input, setInput] = useState('')
+  const [isLoading, setIsLoading] = useState(false)
 
-  // Called when form is submitted or press Enter
-  const handleSubmit = (e: FormEvent) => {
+  const handleSubmit = async (e: FormEvent) => {
     e.preventDefault() // stop page reload
 
     const trimmed = input.trim()
     if (!trimmed) return // ignore empty messages
 
-    const newMessage: Message = {
+    const userMessage: Message = {
       id: Date.now(),
+      role: 'user',
       text: trimmed,
     }
 
     // Append new message to list
-    setMessages(prev => [...prev, newMessage])
-
-    //Clear input box
+    setMessages(prev => [...prev, userMessage])
     setInput('')
+    setIsLoading(true)
+
+    // Send message to backend
+    try{
+      const res = await fetch('/api/chat', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ message: trimmed }),
+      })
+
+      if (!res.ok) {
+        throw new Error(`Server error! status: ${res.status}`)
+      }
+
+      const data: { reply: string } = await res.json()
+
+      // Add LLM's response to messages
+      const assistantMessage: Message = {
+        id: Date.now() + 1,
+        role: 'assistant',
+        text: data.reply,
+      }
+      setMessages(prev => [...prev, assistantMessage])
+    } catch (error) {
+      console.error('Error during fetch:', error)
+      const errorMessage: Message = {
+        id: Date.now() + 2,
+        role: 'assistant',
+        text: "HomeBrain: I hit an error talking to the backend. Check backend logs for more details.",
+      }
+      setMessages(prev => [...prev, errorMessage])
+    } finally {
+      setIsLoading(false)
+    }
   }
 
   return (
