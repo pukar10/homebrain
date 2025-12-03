@@ -3,25 +3,28 @@
 ## Local Dev
 
 ```bash
-# Start React Vite server (port 4000)
+# React Frontend (port 4000)
 npm run dev
 
-# Start Backend (FastAPI port 8001)
+# FastAPI Python Backend (port 8001)
 uvicorn main:app --reload --host 0.0.0.0 --port 8001
-# Health check
-curl http://localhost:8001/api/health 
-# Test chat
-curl -X POST http://localhost:8001/api/chat \
-    -H "Content-Type: application/json" \
-    -d '{"message": "hello from curl"}'
 
+# Swagger
+http://localhost:8001/docs
 ```
 
 ## To Do
 
+- [x] Fontend
+- [x] Backend
+- [x] Backend response from LLM
+- [x] Frontend to backend
+- [ ] Multi-turn chat
+- [ ] History Awareness
+- [ ] Persistent conversations
+
+Future
 - [ ] Dockerize front end
-- [ ] Fake React UI Frontend
-- [ ] 
 
 
 ## Checkout
