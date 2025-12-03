@@ -3,6 +3,11 @@ from pydantic import BaseModel
 from dotenv import load_dotenv
 from google import genai
 import os
+from typing import Literal, List, Optional
+from langchain_core.messages import HumanMessage, AIMessage, SystemMessage
+from langchain_core.prompts import ChatPromptTemplate
+from langchain_google_genai import ChatGoogleGenerativeAI
+
 
 # Load env vars
 load_dotenv()
@@ -19,12 +24,19 @@ MODEL_NAME = "gemini-2.5-flash"
 app = FastAPI()
 
 
+class ChatMessage(BaseModel):
+    role: Literal["user", "assistant"]
+    content: str
+
+
 class ChatRequest(BaseModel):
     message: str
+    history: Optional[List[ChatMessage]] = None
 
 
 class ChatResponse(BaseModel):
     reply: str
+    history: List[ChatMessage]
 
 
 ### Health check endpoint ###
