@@ -3,8 +3,17 @@
 ## Local Dev
 
 ```bash
-# Start React (port 4000)
+# Start React Vite server (port 4000)
 npm run dev
+
+# Start Backend (FastAPI port 8001)
+uvicorn main:app --reload --host 0.0.0.0 --port 8001
+# Health check
+curl http://localhost:8001/api/health 
+# Test chat
+curl -X POST http://localhost:8001/api/chat \
+    -H "Content-Type: application/json" \
+    -d '{"message": "hello from curl"}'
 
 ```
 

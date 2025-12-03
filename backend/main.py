@@ -12,12 +12,12 @@ class ChatResponse(BaseModel):
     reply: str
 
 
-@app.get("/health")
+@app.get("/api/health")
 def health():
     return {"status": "ok", "service": "homebrain-backend"}
 
 
-@app.post("/chat", response_model=ChatResponse)
+@app.post("/api/chat", response_model=ChatResponse)
 def chat(req: ChatRequest):
     user_message = req.message.strip()
 
