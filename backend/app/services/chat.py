@@ -3,24 +3,26 @@ app/services/homebrain_brain.py
 
 - Uses LangGraph's MessagesState to manage conversation history.
 - Defines a one-node graph 
-- Exposes generate_response(...) for FastAPI routes to call.
+- Exposes generate_response for FastAPI routes to call.
 
 """
 
-
-from collections.abc import Sequence
-from typing import List, Tuple
+from typing import List
 from fastapi import HTTPException
-from app.core.config import llm, SYSTEM_PROMPT
+from app.core.config import gemini_llm, SYSTEM_PROMPT
 from app.models.schemas import ChatMessage
+from langgraph.graph import StateGraph, START, END, MessagesState
 from langchain_core.messages import (
     BaseMessage,
     HumanMessage,
     AIMessage,
     SystemMessage,
 )
-from langgraph.graph import StateGraph, START, END, MessagesState
 
+
+######################################
+#   Helper functions                 #
+######################################
 
 def build_lc_history(history: List[ChatMessage]) -> List[BaseMessage]:
     """
@@ -37,49 +39,48 @@ def build_lc_history(history: List[ChatMessage]) -> List[BaseMessage]:
             raise ValueError(f"Unknown message role: {msg.role}")
     return lc_messages
 
-def message_to_text(msg: BaseMessage) -> str:
-    """
-    Safely convert a LangChain message into a plain string for the frontend.
-    Prefer .content (v1.x pattern for messages), fall back to str(msg) if needed.
-    """
-    content = getattr(msg, "content", None)
-    if isinstance(content, str):
-        return content
-    return str(msg)
 
-# Alias
-ChatState = MessagesState
-
-def chat_model_node(state: ChatState) -> dict:
+def chat_model_node(state: MessagesState) -> dict:
     """
-    Single LangGraph node:
-    - Prepends the Homebrain system prompt,
-    - Calls LLM with full message history,
-    - Returns the AI's reply as an updated messages list.
+    Single LangGraph node that calls LLM with conversation history.
     """
-    # state["messages"] is a list[BaseMessage] (human + assistant turns so far)
+    # 1. Build messages with system prompt + history
     messages: List[BaseMessage] = [
         SystemMessage(content=SYSTEM_PROMPT),
         *state["messages"],
     ]
 
-    ai_msg = llm.invoke(messages)  # llm is a LangChain chat model
+    # 2. Call LLM
+    ai_reply = gemini_llm.invoke(messages)
 
-    # Returning {"messages": [ai_msg]} lets MessagesState/add_messages
-    # append this reply to the existing conversation. 
-    return {"messages": [ai_msg]}
+    # 3. return messages with updated state
+    return {"messages": [ai_reply]}
 
+######################################
+#  Build LangGraph chat graph        #
+######################################
 
+# 1. LangGraph builder for chats
+builder = StateGraph(MessagesState)
 
+# 2. Add nodes
+builder.add_node("chat_model", chat_model_node)
 
+# 3. Define Starting edge to first node
+builder.add_edge(START, "chat_model")
 
+# 4. Define Ending edge from last node
+builder.add_edge("chat_model", END)
 
+# 5. Compile the graph
+chat_graph = builder.compile()
 
-
-
+######################################
+#  Core                              #
+######################################
 def generate_response(history: List[ChatMessage], user_message: str,) -> tuple[str, List[ChatMessage]]:
     """
-    Generates a response from the LLM using the chain.
+    Generates a response from the LLM using the LangGraph chat graph.
     """
     # 1. Normalize user message
     trimmed = user_message.strip()
@@ -88,33 +89,45 @@ def generate_response(history: List[ChatMessage], user_message: str,) -> tuple[s
 
     # Dumb logic
     if "proxmox" in trimmed.lower():
-        reply = "I can't talk to Proxmox yet, but soon I'll query your cluster status."
+        reply = (
+            "I can't talk to Proxmox yet, "
+            "but soon I'll query the cluster status."
+        )
         new_history = history + [
             ChatMessage(role="user", content=trimmed),
             ChatMessage(role="assistant", content=reply),
         ]
         return reply, new_history
 
-    # 2. Build LangChain Message History
+    # 2. Convert history to LangChain messages, build initial state by appending new user message
     lc_history = build_lc_history(history)
 
-    # 3. Call the chain, get response
-    try:
-        llm_response_raw = chain.invoke(
-            {
-                "history": lc_history,
-                "input": trimmed,
-            }
-        )
-    except Exception as e:
-        print(f"Homebrain LLM error: {e}")
-        raise HTTPException(status_code=500, detail="LLM call failed")
+    initial_state: MessagesState = {
+        "messages": [
+            *lc_history,
+            HumanMessage(content=trimmed),
+        ]
+    }
 
-    llm_response = getattr(llm_response_raw, "text", None) or str(llm_response_raw)
+    # 3. Run LangGraph chat graph
+    try:
+        final_state = chat_graph.invoke(initial_state)
+    except Exception as e:
+        print(f"Homebrain LangGraph/LLM error: {e!r}")
+        raise HTTPException(status_code=500, detail="LLM call failed") from e
+
+    # 4. Checks if final state is valid
+    messages: List[BaseMessage] = final_state["messages"]
+    if not messages:
+        raise HTTPException(status_code=500, detail="Empty LLM response")
+    
+    # 5. Extract reply
+    last_msg = messages[-1]
+    reply_text = last_msg.content
 
     new_history = history + [
         ChatMessage(role="user", content=trimmed),
-        ChatMessage(role="assistant", content=llm_response),
+        ChatMessage(role="assistant", content=reply_text),
     ]
 
-    return llm_response, new_history
+    return reply_text, new_history

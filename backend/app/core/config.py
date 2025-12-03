@@ -27,7 +27,7 @@ SYSTEM_PROMPT = (
 )
 
 # 3. Initialize shared LLM instance
-llm = ChatGoogleGenerativeAI(
+gemini_llm = ChatGoogleGenerativeAI(
     model="gemini-2.5-flash",
     temperature=0.2,
     max_retries=2,

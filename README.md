@@ -20,6 +20,7 @@ http://localhost:8001/docs
 - [x] Backend response from LLM
 - [x] Frontend to backend
 - [ ] Simple LangChain integration
+- [ ] Upgrade LangChain to LangGraph
 - [ ] Multi-turn chat
 - [ ] History Awareness
 - [ ] Persistent conversations
