@@ -1,9 +1,9 @@
 """
 backend/app/core/config.py
 
-Construct LangChain Prompt Template
-Initializes Gemini chat model.
-Exposes a 'chain' object that other services can call to generate responses.
+- Construct LangChain Prompt Template
+- Initializes Gemini chat model.
+- Exposes a 'chain' object that other services can call to generate responses.
 
 """
 
