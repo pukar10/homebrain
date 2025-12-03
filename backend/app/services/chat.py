@@ -1,13 +1,26 @@
 """
 app/services/homebrain_brain.py
- 
+
+- Uses LangGraph's MessagesState to manage conversation history.
+- Defines a one-node graph 
+- Exposes generate_response(...) for FastAPI routes to call.
+
 """
 
-from typing import List
+
+from collections.abc import Sequence
+from typing import List, Tuple
 from fastapi import HTTPException
-from langchain_core.messages import BaseMessage, HumanMessage, AIMessage
-from app.core.config import chain
-from backend.app.models.schemas import ChatMessage
+from langchain_core.messages import (
+    BaseMessage,
+    HumanMessage,
+    AIMessage,
+    SystemMessage,
+)
+from langgraph.graph import StateGraph, START, END, MessagesState
+
+from app.core.config import llm, SYSTEM_PROMPT
+from app.models.chat import ChatMessage
 
 
 def build_lc_history(history: List[ChatMessage]) -> List[BaseMessage]:
