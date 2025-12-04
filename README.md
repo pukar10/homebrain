@@ -1,6 +1,6 @@
 # Homebrain
 
-## Local Dev
+### Local Dev
 
 ```bash
 # React Frontend (port 4000)
@@ -13,34 +13,34 @@ uvicorn main:app --reload --host 0.0.0.0 --port 8001
 http://localhost:8001/docs
 ```
 
-## To Do
+### 🗺️ Roadmap / To-Do
 
-Starting
+### 🧱 Foundation
 - [x] React Fontend
 - [x] FastAPI Backend
 - [x] Backend response from LLM
 - [x] Frontend to backend
 ---
-LangChain
-- [x] LangChain integration
-
-LangGraph
-- [x] Upgrade LangGraph!
+### ⛓️ LangChain
+- [x] Integrate LangChain
+---
+### 📊 LangGraph
+- [x] Upgrade to LangGraph!
 - [x] Multi-turn chat
-- [x] History Awareness (send full history with userQuery)
+- [x] History Awareness (send full history with `userQuery`)
 - [ ] Multi-nodes! Add a tool node
 - [ ] Implement Memory
 - [ ] Add RAG node
 
-Memory
-- [ ] Implement sessions using session_id's
-- [ ] Add backend store
-- [ ] Load prior history from store by session_id
+#### 💾 Memory
+- [ ] Implement sessions using `session_id`
+- [ ] Add backend store (Postgres)
+- [ ] Load prior history from store by `session_id`
 ---
-Other
+### 🐿️ Other
 - [ ] Implement Authorizaion
 ---
-DevOps
+### ☕︎ DevOps
 - [ ] Containerize frontend
 - [ ] Containerize Backend
 - [ ] Orchestration with Docker compose
