@@ -31,7 +31,8 @@ http://localhost:8001/docs
 - [ ] Containerize Backend
 - [ ] Orchestration with Docker compose
 - [ ] CI/CD with GitHub Actions
-
+--- 
+- [ ] Implement Authorizaion 
 
 ## Checkout
 
