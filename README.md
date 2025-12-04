@@ -15,24 +15,31 @@ http://localhost:8001/docs
 
 ## To Do
 
+Starting
 - [x] React Fontend
 - [x] FastAPI Backend
 - [x] Backend response from LLM
 - [x] Frontend to backend
 ---
-- [x] Simple LangChain integration
-- [x] Upgrade LangChain to use LangGraph!
+LangChain
+- [x] LangChain integration
 ---
+LangGraph
+- [x] Upgrade LangGraph!
 - [x] Multi-turn chat
 - [x] History Awareness (send full history with userQuery)
 - [ ] Persistent conversations
 ---
+Other
+- [ ] Implement Authorizaion
+---
+DevOps
 - [ ] Containerize frontend
 - [ ] Containerize Backend
 - [ ] Orchestration with Docker compose
 - [ ] CI/CD with GitHub Actions
 --- 
-- [ ] Implement Authorizaion 
+
 
 ## Checkout
 
