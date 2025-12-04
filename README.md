@@ -19,14 +19,18 @@ http://localhost:8001/docs
 - [x] Backend
 - [x] Backend response from LLM
 - [x] Frontend to backend
+---
 - [x] Simple LangChain integration
 - [x] Upgrade LangChain to use LangGraph!
-- [ ] Multi-turn chat
+---
+- [x] Multi-turn chat
 - [ ] History Awareness
 - [ ] Persistent conversations
-
-Future
-- [ ] Dockerize front end
+---
+- [ ] Containerize frontend
+- [ ] Containerize Backend
+- [ ] Orchestration with Docker compose
+- [ ] CI/CD with GitHub Actions
 
 
 ## Checkout
