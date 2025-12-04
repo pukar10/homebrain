@@ -24,7 +24,8 @@ http://localhost:8001/docs
 - [x] Upgrade LangChain to use LangGraph!
 ---
 - [x] Multi-turn chat
-- [ ] History Awareness
+- [x] History Awareness (send full history with userQuery)
+- [ ] Make Backend single source of truth
 - [ ] Persistent conversations
 ---
 - [ ] Containerize frontend

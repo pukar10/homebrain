@@ -55,20 +55,26 @@ function App() {
         throw new Error(`Server error! status: ${res.status}`)
       }
 
-      // 4.1 Define response type & wait for response data
+      type ChatMessage = {
+        role: 'user' | 'assistant'
+        content: string
+      }
+
       type ChatResponse = {
         reply: string
-        history: { role: 'user' | 'assistant'; content: string }[]
+        history: ChatMessage[]
       }
+
       const data: ChatResponse = await res.json()
 
-      // 4.2 Create assistant message object & update state
-      const assistantMessage: Message = {
-        id: Date.now() + 1,
-        role: 'assistant',
-        text: data.reply,
-      }
-      setMessages(prev => [...prev, assistantMessage])
+      // Normalize backend history data
+      const mappedMessages: Message[] = data.history.map((m, index) => ({
+        id: index,
+        role: m.role,
+        text: m.content,
+      }))
+      // Update state with new message
+      setMessages(mappedMessages)
     } catch (error) {
       console.error('Error during fetch:', error)
       const errorMessage: Message = {
