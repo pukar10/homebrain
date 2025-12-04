@@ -38,7 +38,8 @@ http://localhost:8001/docs
 - [ ] Load prior history from store by `session_id`
 ---
 ### 🐿️ Other
-- [ ] Implement Authorizaion
+- [ ] Basic Auth
+- [ ] Rate limit / abuse protection
 ---
 ### ☕︎ DevOps
 - [ ] Containerize frontend
