@@ -7,7 +7,7 @@
 npm run dev
 
 # FastAPI Python Backend (port 8001)
-uvicorn main:app --reload --host 0.0.0.0 --port 8001
+uvicorn app.main:app --reload --host 0.0.0.0 --port 8001
 
 # Swagger
 http://localhost:8001/docs
