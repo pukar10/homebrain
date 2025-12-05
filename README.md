@@ -16,7 +16,7 @@ http://localhost:8001/docs
 ### 🗺️ Roadmap / To-Do
 
 ### 🧱 Foundation
-- [x] Traffic from Domain to Caddy Reverse Proxy to Compute VM hosted on Homelab
+- [x] Traffic from Domain to Caddy Reverse Proxy to Compute VM in Homelab
 - [x] React Fontend
 - [x] FastAPI Backend
 - [x] Expose backend routes
