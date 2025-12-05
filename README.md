@@ -16,10 +16,11 @@ http://localhost:8001/docs
 ### 🗺️ Roadmap / To-Do
 
 ### 🧱 Foundation
+- [x] Domain to Caddy Reverse Proxy to Compute VM hosted on Homelab
 - [x] React Fontend
 - [x] FastAPI Backend
+- [x] Expose backend routes
 - [x] Backend response from LLM
-- [x] Frontend to backend
 ---
 ### ⛓️ LangChain
 - [x] Integrate LangChain
