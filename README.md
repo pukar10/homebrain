@@ -35,11 +35,10 @@ docker compose up -d --build
 - [x] Multi-turn chat
 - [x] History Awareness (send full history with `userQuery`)
 - [ ] Multi-nodes! Add a tool node
-- [ ] Implement Memory
 - [ ] Add RAG Pipeline
 
 #### 💾 Memory
-- [ ] Implement sessions using `session_id`
+- [x] Implement in-memory sessions using `session_id`
 - [ ] Add backend store (Postgres)
 - [ ] Load prior history from store by `session_id`
 ---
