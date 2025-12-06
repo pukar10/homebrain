@@ -7,7 +7,8 @@ app/services/homebrain_brain.py
 
 """
 
-from typing import List
+from typing import Dict, List
+from uuid import uuid4
 from fastapi import HTTPException
 from app.core.config import gemini_llm, SYSTEM_PROMPT
 from app.models.schemas import ChatMessage
@@ -19,9 +20,8 @@ from langchain_core.messages import (
     SystemMessage,
 )
 
-
 ######################################
-#   Helper functions                 #
+#   Helpers                          #
 ######################################
 
 def build_lc_history(history: List[ChatMessage]) -> List[BaseMessage]:
@@ -40,9 +40,9 @@ def build_lc_history(history: List[ChatMessage]) -> List[BaseMessage]:
     return lc_messages
 
 
-def chat_model_node(state: MessagesState) -> dict:
+def generate_reply(state: MessagesState) -> dict:
     """
-    Single LangGraph node that calls LLM with conversation history.
+    Node that calls LLM with system prompt + history, returns updated messages state.
     """
     # 1. Build messages with system prompt + history
     messages: List[BaseMessage] = [
@@ -56,29 +56,19 @@ def chat_model_node(state: MessagesState) -> dict:
     # 3. return messages with updated state
     return {"messages": [ai_reply]}
 
-######################################
-#  Build LangGraph chat graph        #
-######################################
 
-# 1. LangGraph builder for chats
+# Initialize LangGraph builder
 builder = StateGraph(MessagesState)
-
-# 2. Add nodes
-builder.add_node("chat_model", chat_model_node)
-
-# 3. Define Starting edge to first node
-builder.add_edge(START, "chat_model")
-
-# 4. Define Ending edge from last node
-builder.add_edge("chat_model", END)
-
-# 5. Compile the graph
+builder.add_node("agent", generate_reply)
+builder.add_edge(START, "agent")
+builder.add_edge("agent", END)
 chat_graph = builder.compile()
+
 
 ######################################
 #  Core                              #
 ######################################
-def generate_response(history: List[ChatMessage], user_message: str,) -> tuple[str, List[ChatMessage]]:
+def handle_chat_turn(history: List[ChatMessage], user_message: str,) -> tuple[str, List[ChatMessage]]:
     """
     Generates a response from the LLM using the LangGraph chat graph.
     """

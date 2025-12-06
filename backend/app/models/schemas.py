@@ -17,8 +17,11 @@ class ChatMessage(BaseModel):
 class ChatRequest(BaseModel):
     message: str
     history: Optional[List[ChatMessage]] = None
+    session_id: Optional[str] = None
 
 
 class ChatResponse(BaseModel):
     reply: str
     history: List[ChatMessage]
+    session_id: str
+

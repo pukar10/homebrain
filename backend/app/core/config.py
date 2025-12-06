@@ -28,7 +28,7 @@ SYSTEM_PROMPT = (
     "Be concise but clear, and ask for clarification when needed. "
 )
 
-# 3. Initialize shared LLM instance
+# 3. Expose LLM objects for other services to use
 gemini_llm = ChatGoogleGenerativeAI(
     model="gemini-2.5-flash",
     temperature=0.2,
