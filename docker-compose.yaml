@@ -1,5 +1,3 @@
-version: "3.9"
-
 services:
   db:
     image: postgres:16
@@ -10,8 +8,6 @@ services:
       POSTGRES_USER: ${POSTGRES_USER}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
       POSTGRES_DB: ${POSTGRES_DB}
-    ports:
-      - "5432:5432"
     volumes:
       - homebrain_db:/var/lib/postgresql/data
 
@@ -20,10 +16,15 @@ services:
       context: ./backend
       dockerfile: Dockerfile
     env_file:
-      - ./backend/.env
+      - .env
     ports:
       - "8001:8001"
     restart: unless-stopped
+    volumes: # for local development
+      - ./backend:/app
+    command: uvicorn app.main:app --host 0.0.0.0 --port 8001 --reload
+    depends_on:
+      - db
 
   frontend:
     build:
@@ -32,3 +33,6 @@ services:
     ports:
       - "4000:80"        # host:container (nginx listens on 80)
     restart: unless-stopped
+
+volumes:
+  homebrain_db:

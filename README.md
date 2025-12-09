@@ -3,18 +3,17 @@
 ### Local Dev
 
 ```bash
-# React Frontend (port 4000)
+# Fontend React (port 4000)
 npm run dev
 curl http://localhost:4000
 
-# FastAPI Python Backend (port 8001)
+# Backend python FastAPI (port 8001)
 uvicorn app.main:app --reload --host 0.0.0.0 --port 8001
-curl http://localhost:8001/api/health
 
-# Swagger Docs
-http://localhost:8001/docs
+    # Swagger Docs
+    http://localhost:8001/docs
 
-## Frontend + Backend w/ docker compose
+# Full Stack Start
 docker compose up -d --build
 ```
 

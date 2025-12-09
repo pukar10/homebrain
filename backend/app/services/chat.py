@@ -128,7 +128,7 @@ def handle_chat_turn(history: List[ChatMessage], user_message: str,) -> tuple[st
 def handle_session_chat_turn(session_id: str | None, user_message: str) -> Tuple[str, List[ChatMessage], str]:
     """
     High-level entrypoint: given an optional session_id and user message,
-    load history, run one chat turn, save history, and return:
+    load history from DB, run one chat turn, save history to DB, and return:
       (LLM_reply, new_history, resolved_session_id)
     """
     # 1. Get or create session
@@ -136,11 +136,9 @@ def handle_session_chat_turn(session_id: str | None, user_message: str) -> Tuple
 
     # 2. Load history for session
     history = get_history_for_session(sid)
-    print(f"[DEBUG] sid={sid}, incoming_history_len={len(history)}")
 
     # 3. Run turn logic
     LLM_reply, new_history = handle_chat_turn(history, user_message)
-    print(f"[DEBUG] sid={sid}, new_history_len={len(new_history)}")
 
     # 4. Save updated history back to session store
     save_history_for_session(sid, new_history)
