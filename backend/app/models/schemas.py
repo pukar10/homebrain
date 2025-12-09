@@ -6,6 +6,7 @@ backend/app/models/chat.py
 """
 
 from typing import Literal, List, Optional
+from datetime import datetime
 from pydantic import BaseModel
 
 
@@ -24,3 +25,13 @@ class ChatResponse(BaseModel):
     history: List[ChatMessage]
     session_id: str
 
+
+class SessionSummary(BaseModel):
+    id: str
+    created_at: datetime
+
+
+class SessionDetail(BaseModel):
+    id: str
+    created_at: datetime
+    messages: List[ChatMessage]
