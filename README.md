@@ -26,33 +26,59 @@ docker compose up -d --build
 - [x] Backend response from LLM
 ---
 ### ⛓️ LangChain
-- [x] Integrate LangChain
+- [x] Integrate a LangChain chain
 ---
 ### 📊 LangGraph
-- [x] Upgrade to LangGraph!
-- [x] Multi-turn chat
-- [x] History Awareness (send full history with `userQuery`)
-- [ ] Multi-nodes! Add a tool node
-- [ ] Add RAG Pipeline
-
-#### 💾 Memory
-- [x] Implement in-memory sessions using `session_id`
-- [x] Add Postgres DB
-- [x] Load prior history from store by `session_id`
-- [x] Sizebar with "New Chat" and saved chats
-- [ ] 
+- [x] Integrate a LangGraph Node
+- [ ] Implement streaming (replace invoke)
+---
+### Multi-turn chat / History Awareness
+- [x] Response from LLM displayed in frontend
+- [x] Send System_Prompt + full message history + new message to LLM
+---
+### In-memory sessions
+- [x] Frontend generates and sends a `session_id` with payload
+- [x] if exists pull history else create new `session_id` key
+---
+### Containerize
+- [x] Seperate frontend and backend
+- [x] Dockerfile for frontend
+- [x] Dockerfile for backend
+- [x] Docker-compose.yaml 
+---
+### Postgres
+- [x] Configure docker-compose.yaml
+- [x] Save message history with Session_id in DB
+---
+### Sidebar
+- [x] Add sidebar to frontend
+- [x] Add button for new chat (Send new `session_id` with payload)
+- [x] Show previous conversations by pulling `session_id` from backend store
+- [ ] Conversation titles
+    - [ ] Call LLM with summarization prompt (after first turn) to generate title
+    - [ ] Save in PostgresDB with `thread_id`
+    - [ ] Show on frontend
+---
+#### Tool Node
+- [ ] Create LangChain `tool`
+- [ ] Wrap with agent
+- [ ] Call agent from LangGraph Node 
+---
+#### RAG Agent
+- [ ] Implement Vector Database (Chunking -> Embedding -> Vector store) to ingest Documents (.md/markdown/.txt)
+- [ ] Create Retriever tool
+- [ ] Add Retriever tool to agent (Agent should decide Answer from prior context or call Retriever tool and ground answer)
+- [ ] Upgrade documents to include .PDF
 ---
 ### 🐿️ Other
 - [ ] Basic Auth
 - [ ] Rate limit / abuse protection
 - [ ] Cost tracker
 - [ ] Homelab Statuses for various services
-- [ ] Integrate Redis!
+- [ ] Integrate Redis?
+- [ ] Integrate kafka? 
 ---
 ### ☕︎ DevOps
-- [ ] Containerize frontend
-- [ ] Containerize Backend
-- [ ] Orchestration with Docker compose
 - [ ] CI/CD with GitHub Actions
 --- 
 
