@@ -1,11 +1,12 @@
 from datetime import datetime, timezone
-from uuid import uuid4
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from sqlalchemy import String, Text, DateTime, ForeignKey, BigInteger
 
 from app.db.core import Base
 
 
+# Redo table to be keyed by thread_id for stats.
+# Deprecated at the moment; using LangGraph's checkpointer instead.
 class SessionDB(Base):
     """
     Represents a chat session in the database.
@@ -25,6 +26,7 @@ class SessionDB(Base):
     )
 
 
+# Deprecated at the moment; using LangGraph's checkpointer instead.
 class MessageDB(Base):
     
     __tablename__ = "messages"

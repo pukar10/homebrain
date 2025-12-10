@@ -6,13 +6,14 @@ app/services/chat.py
 
 """
 
-from __future__ import annotations
 from typing import List, Tuple, Generator
 import uuid
+
 from fastapi import HTTPException
-from app.models.schemas import ChatMessage
 from langchain_core.messages import BaseMessage, HumanMessage, AIMessage, SystemMessage
+
 from app.core.graph import graph
+from app.models.schemas import ChatMessage
 
 ######################################
 #   Helpers                          #

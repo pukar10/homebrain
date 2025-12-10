@@ -1,12 +1,11 @@
 """
-backend/app/models/chat.py
+backend/app/models/schemas.py
 
-- Defines pydantic models for chat messages, requests and responses.
+- Defines pydantic models
 
 """
 
 from typing import Literal, List, Optional
-from datetime import datetime
 from pydantic import BaseModel
 
 
@@ -26,12 +25,12 @@ class ChatResponse(BaseModel):
     thread_id: str
 
 
-class SessionSummary(BaseModel):
-    id: str
-    created_at: datetime
+# class SessionSummary(BaseModel):
+#     id: str
+#     created_at: datetime
 
 
-class SessionDetail(BaseModel):
-    id: str
-    created_at: datetime
-    messages: List[ChatMessage]
+# class SessionDetail(BaseModel):
+#     id: str
+#     created_at: datetime
+#     messages: List[ChatMessage]

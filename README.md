@@ -26,24 +26,21 @@ docker compose up -d --build
 - [x] Backend response from LLM
 ---
 ### ⛓️ LangChain
-- [x] Integrate a LangChain chain
+- [x] Integrate LangChain chain
 ---
 ### 📊 LangGraph
-- [x] Integrate a LangGraph Node
+- [x] Integrate LangGraph Node
 - [ ] Implement streaming (replace invoke)
----
-### Multi-turn chat / History Awareness
-- [x] Response from LLM displayed in frontend
-- [x] Send System_Prompt + full message history + new message to LLM
 ---
 ### Memory
 
-#### In-Memory
-- [x] Frontend generates and sends a `session_id` with payload
-- [x] if exists pull history, else create new `session_id` key
-- [x] Save all `session_id` tokens and messages to DB
+#### In-Memory (Postgres)
+- [x] Multi-turn
+- [x] History Awareness
 
-#### Checkpointers
+#### Checkpointers (production solution) *
+- [ ] Short-term memory (multi-turn)
+- [ ] Long-term memory (user/app data accross sessions)
 
 ---
 ### Containerize
@@ -51,10 +48,6 @@ docker compose up -d --build
 - [x] Dockerfile for frontend
 - [x] Dockerfile for backend
 - [x] Docker-compose.yaml 
----
-### Postgres
-- [x] Configure docker-compose.yaml
-- [x] Save message history with Session_id in DB
 ---
 ### Sidebar
 - [x] Add sidebar to frontend
@@ -65,12 +58,12 @@ docker compose up -d --build
     - [ ] Save in PostgresDB with `thread_id`
     - [ ] Show on frontend
 ---
-### Tool Node
+### Tool Node *
 - [ ] Create LangChain `tool`
 - [ ] Wrap with agent
 - [ ] Call agent from LangGraph Node 
 ---
-### RAG Agent
+### RAG Agent *
 - [ ] Implement Vector Database (Chunking -> Embedding -> Vector store) to ingest Documents (.md/markdown/.txt)
 - [ ] Create Retriever tool
 - [ ] Add Retriever tool to agent (Agent should decide Answer from prior context or call Retriever tool and ground answer)
