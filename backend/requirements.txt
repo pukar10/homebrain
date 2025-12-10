@@ -6,7 +6,6 @@ pydantic
 langchain
 langgraph
 langchain-google-genai
-langchain-openai
 sqlalchemy>=2.0
 psycopg2-binary
 passlib[bcrypt]
