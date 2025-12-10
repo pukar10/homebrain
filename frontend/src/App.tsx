@@ -3,28 +3,28 @@ import type { FormEvent } from 'react'
 
 type Message = {
   id: number
-  role: 'user' | 'assistant'
+  role: 'user' | 'assistant' | 'system'
   text: string
 }
 
 type ChatMessage = {
-  role: 'user' | 'assistant'
+  role: 'user' | 'assistant' | 'system'
   content: string
 }
 
 type ChatResponse = {
   reply: string
   history: ChatMessage[]
-  session_id: string
+  thread_id: string
 }
 
 type SessionSummary = {
-  id: string
+  thread_id: string
   created_at: string
 }
 
 type SessionDetail = {
-  id: string
+  thread_id: string
   created_at: string
   messages: ChatMessage[]
 }
@@ -35,7 +35,7 @@ function App() {
   const [input, setInput] = useState('')
   
   const [isLoading, setIsLoading] = useState(false)
-  const [sessionId, setSessionId] = useState<string | null>(null)
+  const [threadId, setThreadId] = useState<string | null>(null)
 
   const [sessions, setSessions] = useState<SessionSummary[]>([])
   const [isLoadingSessions, setIsLoadingSessions] = useState(false)
@@ -57,6 +57,14 @@ function App() {
       return iso
     }
   }
+
+
+  const mapChatMessagesToUI = (msgs: ChatMessage[]): Message[] =>
+    msgs.map((m, index) => ({
+      id: index,
+      role: m.role === 'user' ? 'user' : 'assistant',
+      text: m.content,
+    }))
 
 
 
@@ -87,15 +95,9 @@ function App() {
       }
       const data: SessionDetail = await res.json()
 
-      // Normalize messages from backend into UI messages
-      const mappedMessages: Message[] = data.messages.map((m, index) => ({
-        id: index,
-        role: m.role,
-        text: m.content,
-      }))
-
+      const mappedMessages = mapChatMessagesToUI(data.messages)
       setMessages(mappedMessages)
-      setSessionId(data.id)
+      setThreadId(data.thread_id)
     } catch (err) {
       console.error('Error fetching session detail:', err)
     } finally {
@@ -115,62 +117,100 @@ function App() {
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault()
 
-    // 1. Clean up input
     const userInput = input.trim()
     if (!userInput) return
 
-    // 2. Optimistic UI update with user message
+    // Optimistic UI update with user message
     const userMessage: Message = {
       id: Date.now(),
       role: 'user',
       text: userInput,
     }
-    setMessages(prev => [...prev, userMessage])
+
+    // Placeholder assistant message while waiting for backend
+    const assistantMessage: Message = {
+      id: Date.now() + 1,
+      role: 'assistant',
+      text: '...',
+    }
+
+    setMessages(prev => [...prev, userMessage, assistantMessage])
     setInput('')
     setIsLoading(true)
 
+    const currentAssistantId = assistantMessage.id
+
     try {
-      const res = await fetch('/api/chat', {
+      const res = await fetch('/api/chat/stream', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           message: userInput,
-          session_id: sessionId,
+          thread_id: threadId,
         }),
       })
 
-      if (!res.ok) {
+      if (!res.ok || !res.body) {
         throw new Error(`Server error! status: ${res.status}`)
       }
 
-      const data: ChatResponse = await res.json()
+      const reader = res.body.getReader()
+      const decoder = new TextDecoder('utf-8')
+      let buffer = ''
 
-      // Update current sessionId from backend
-      setSessionId(data.session_id)
+      while (true) {
+        const { value, done } = await reader.read()
+        if (done) break
 
-      // Normalize backend history data into UI messages
-      const mappedMessages: Message[] = data.history.map((m, index) => ({
-        id: index,
-        role: m.role,
-        text: m.content,
-      }))
+        buffer += decoder.decode(value, { stream: true })
 
-      setMessages(mappedMessages)
+        // Server is sending SSE-style chunks: "data: ...\n\n"
+        const parts = buffer.split('\n\n')
+        // Last piece may be incomplete; keep it in buffer
+        buffer = parts.pop() ?? ''
 
-      // Refresh sessions list so new session appears / updated timestamp
-      fetchSessions()
+        for (const part of parts) {
+          const line = part.trim()
+          if (!line.startsWith('data: ')) continue
 
+          const payload = line.slice(6) // remove "data: "
+
+          // DONE marker from backend: [DONE]|<thread_id>
+          if (payload.startsWith('[DONE]|')) {
+            const newThreadId = payload.slice('[DONE]|'.length)
+            if (newThreadId) {
+              setThreadId(newThreadId)
+            }
+            // Refresh session list when a turn is fully complete
+            fetchSessions()
+            continue
+          }
+
+          // Normal text chunk: append to the last assistant message
+          if (payload) {
+            setMessages(prev =>
+              prev.map(msg =>
+                msg.id === currentAssistantId
+                  ? { ...msg, text: msg.text + payload }
+                  : msg
+              )
+            )
+          }
+        }
+      }
     } catch (error) {
-        console.error('Error during fetch:', error)
+        console.error('Error during streaming chat:', error)
 
-        const errorMessage: Message = {
+      // Replace the placeholder assistant message with an error message
+      setMessages(prev => [
+        ...prev.filter(m => m.id !== currentAssistantId),
+        {
           id: Date.now() + 2,
           role: 'assistant',
-          text: "HomeBrain: I hit an error talking to the backend. Check backend logs for more details.",
-        }
-
-        setMessages(prev => [...prev, errorMessage])
-      
+          text:
+            'Homebrain: I hit an error talking to the backend. Check backend logs for more details.',
+        },
+      ])
     } finally {
         setIsLoading(false)
     }
@@ -179,14 +219,13 @@ function App() {
 
 
   const handleSelectSession = (id: string) => {
-    // Click on a session in the sidebar: load its history
     fetchSessionDetail(id)
   }
 
 
   const handleNewChat = () => {
-    // Let backend create a new session on next /api/chat call
-    setSessionId(null)
+    // Let backend create a new thread_id on next /api/chat* call
+    setThreadId(null)
     setMessages([])
     setInput('')
   }
@@ -300,13 +339,13 @@ function App() {
 
           {!isLoadingSessions &&
             sessions.map(session => {
-              const isActive = session.id === sessionId
+              const isActive = session.thread_id === threadId
 
               return (
                 <button
-                  key={session.id}
+                  key={session.thread_id}
                   type="button"
-                  onClick={() => handleSelectSession(session.id)}
+                  onClick={() => handleSelectSession(session.thread_id)}
                   style={{
                     width: '100%',
                     textAlign: 'left',
@@ -334,7 +373,7 @@ function App() {
                       textOverflow: 'ellipsis',
                     }}
                   >
-                    {session.id.slice(0, 8)}…
+                    {session.thread_id.slice(0, 8)}…
                   </div>
                   <div
                     style={{
@@ -378,9 +417,18 @@ function App() {
           <p style={{ opacity: 0.8, fontSize: '0.9rem' }}>
             Central Homelab Knowledge ⚪ AI assistant
           </p>
-          {sessionId && (
-            <p style={{ opacity: 0.6, fontSize: '0.75rem', marginTop: '0.25rem' }}>
-              Session: <code>{sessionId.slice(0, 10)}…</code>
+          {threadId && (
+            <p
+              style={{ 
+                opacity: 0.6, 
+                fontSize: '0.75rem', 
+                marginTop: '0.25rem' 
+              }}
+            >
+              Thread:{' '} 
+              <code>
+                {threadId.slice(0, 10)}…
+              </code>
             </p>
           )}
         </header>
