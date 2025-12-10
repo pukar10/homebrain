@@ -30,7 +30,7 @@ docker compose up -d --build
 ---
 ### 📊 LangGraph
 - [x] Integrate LangGraph Node
-- [ ] Implement streaming (replace invoke)
+- [x] Implement streaming (replace invoke)
 ---
 ### Memory
 
@@ -39,7 +39,7 @@ docker compose up -d --build
 - [x] History Awareness
 
 #### Checkpointers (production solution) *
-- [ ] Short-term memory (multi-turn)
+- [x] Short-term memory (multi-turn)
 - [ ] Long-term memory (user/app data accross sessions)
 
 ---
