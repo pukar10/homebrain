@@ -32,8 +32,6 @@ def to_chat_messages(messages: List[BaseMessage]) -> List[ChatMessage]:
             role = "user"
         elif isinstance(msg, AIMessage):
             role = "assistant"
-        elif isinstance(msg, SystemMessage):
-            role = "system"
         else:
             role = "system"
         chat_messages.append(ChatMessage(role=role, content=msg.content))
