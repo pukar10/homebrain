@@ -11,3 +11,4 @@ sqlalchemy>=2.0
 psycopg2-binary
 passlib[bcrypt]
 pydantic-settings
+langgraph-checkpoint-postgres
