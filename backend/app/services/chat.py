@@ -39,6 +39,9 @@ def to_chat_messages(messages: List[BaseMessage]) -> List[ChatMessage]:
     return chat_messages
 
 
+def thread_config(thread_id: str) -> dict:
+    return {"configurable": {"thread_id": thread_id}}
+
 ######################################
 #  Core                              #
 ######################################
@@ -58,7 +61,7 @@ def chat_turn(thread_id: str | None, user_msg: str) -> Tuple[str, List[ChatMessa
         raise HTTPException(status_code=400, detail="Empty message is not allowed.")
 
     tid = thread_id or str(uuid.uuid4())
-    config = {"configurable": {"thread_id": tid}}
+    config = thread_config(tid)
 
     try:
         final_state = graph.invoke(
@@ -93,7 +96,7 @@ def chat_turn_stream(thread_id: str | None, user_msg: str) -> Tuple[str, Generat
         raise HTTPException(status_code=400, detail="Empty message is not allowed.")
 
     tid = thread_id or str(uuid.uuid4())
-    config = {"configurable": {"thread_id": tid}}
+    config = thread_config(tid)
 
     def token_generator() -> Generator[str, None, None]:
         try:
