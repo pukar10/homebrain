@@ -1,4 +1,6 @@
-# app/api/sessions.py
+"""
+app/api/sessions.py
+DEPRECATED: session endpoints disabled for now.
 
 from fastapi import APIRouter, HTTPException
 from sqlalchemy import select
@@ -55,3 +57,4 @@ def get_session(session_id: str) -> SessionDetail:
         )
     finally:
         db.close()
+"""

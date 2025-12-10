@@ -1,4 +1,7 @@
+"""
 # app/services/session_store.py
+DEPRECATED: session store service disabled for now.
+
 
 from typing import List, Optional
 from uuid import uuid4
@@ -13,7 +16,7 @@ from app.models.schemas import ChatMessage
 
 def get_or_create_session(session_id: Optional[str]) -> str:
     """
-    Return an existing session_id if it exists, otherwise create a new session row.
+    # Return an existing session_id if it exists, otherwise create a new session row.
     """
     db = SessionLocal()
     try:
@@ -33,8 +36,8 @@ def get_or_create_session(session_id: Optional[str]) -> str:
 
 def get_history_for_session(session_id: str) -> List[ChatMessage]:
     """
-    Load the chat history for a given session_id from the database and
-    convert it into a list[ChatMessage] for your chat logic.
+    # Load the chat history for a given session_id from the database and
+    # convert it into a list[ChatMessage] for your chat logic.
     """
     db = SessionLocal()
     try:
@@ -56,10 +59,10 @@ def get_history_for_session(session_id: str) -> List[ChatMessage]:
 
 def save_history_for_session(session_id: str, history: List[ChatMessage]) -> None:
     """
-    Persist the entire history for a session.
+    # Persist the entire history for a session.
 
-    Easiest approach: wipe existing messages for this session and re-insert
-    from the in-memory history list.
+    # Easiest approach: wipe existing messages for this session and re-insert
+    # from the in-memory history list.
     """
     db = SessionLocal()
     try:
@@ -83,3 +86,4 @@ def save_history_for_session(session_id: str, history: List[ChatMessage]) -> Non
         db.commit()
     finally:
         db.close()
+"""
