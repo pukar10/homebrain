@@ -12,3 +12,5 @@ passlib[bcrypt]
 pydantic-settings
 langgraph-checkpoint-postgres
 psycopg[binary]>=3.1
+langchain-community
+langchain-chroma
