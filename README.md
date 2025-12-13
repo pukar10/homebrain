@@ -12,11 +12,13 @@ uvicorn app.main:app --reload --host 0.0.0.0 --port 8001
     # Swagger Docs
     http://localhost:8001/docs
 
-# Full Stack Start
+# Full Stack Start (prod/dev)
 docker compose up -d --build
+docker compose -f docker-compose.dev.yaml up -d --build
 
-# Run ingestion job for RAG agent
+# Run ingestion job for RAG agent (prod/dev)
 docker compose --profile jobs run --rm ingest
+docker compose -f docker-compose.dev.yaml --profile jobs run --rm ingest
 ```
 
 ### 🗺️ Roadmap / To-Do
