@@ -50,7 +50,7 @@ services:
     volumes:
       - /srv/homebrain/docs:/data/docs:ro
       - /srv/homebrain/chroma:/data/chroma
-    command: ["python", "-m", "app.services.ingest"]
+    command: ["python", "-m", "app.agents.rag.ingest"]
 
 volumes:
   homebrain_db:
