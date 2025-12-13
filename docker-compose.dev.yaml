@@ -8,6 +8,10 @@ services:
     restart: unless-stopped
 
   backend:
+    depends_on:
+      - ollama-init:
+          condition: service_completed_successfully
+      - db
     build:
       context: ./backend
       dockerfile: Dockerfile
@@ -24,8 +28,6 @@ services:
       - /srv/homebrain/chroma:/data/chroma
       - ./backend:/app
     command: uvicorn app.main:app --host 0.0.0.0 --port 8001 --reload
-    depends_on:
-      - db
 
   db:
     image: postgres:16
@@ -55,6 +57,19 @@ services:
       timeout: 10s
       retries: 10
       start_period: 120s
+
+  ollama-init:
+    image: ollama/ollama:latest
+    depends_on:
+      ollama:
+        condition: service_healthy
+    environment:
+      - OLLAMA_HOST=http://ollama:11434
+    entrypoint: ["/bin/sh", "-lc"]
+    command: >
+      ollama list | grep -q "snowflake-arctic-embed:s"
+      || ollama pull snowflake-arctic-embed:s
+    restart: "no"
 
   ingest:
     profiles: ["jobs"]
