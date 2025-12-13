@@ -9,6 +9,7 @@ backend/app/core/config.py
 
 from pydantic_settings import BaseSettings, SettingsConfigDict
 from langchain_google_genai import ChatGoogleGenerativeAI
+from langchain_ollama import OllamaEmbeddings
 
 
 class Settings(BaseSettings):
@@ -29,6 +30,10 @@ class Settings(BaseSettings):
     # --- RAG ---
     rag_docs_dir: str
     rag_vector_dir: str
+
+    # --- Embeddings ---
+    ollama_base_url: str
+    ollama_embed_model: str
 
 # Singleton
 settings = Settings()

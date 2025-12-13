@@ -6,14 +6,14 @@ Helper to get Chroma vectorstore instance for RAG agent.
 
 from pathlib import Path
 from functools import lru_cache
-from langchain_google_genai import GoogleGenerativeAIEmbeddings
+from langchain_ollama import OllamaEmbeddings
 from langchain_chroma import Chroma
 from app.core.config import settings
 
 @lru_cache(maxsize=1)
 def get_vectorstore() -> Chroma:
 
-    embeddings = GoogleGenerativeAIEmbeddings(model="models/embedding-001")
+    embeddings = OllamaEmbeddings(model="snowflake-arctic-embed:s")
 
     vector_path = Path(settings.rag_vector_dir)
 

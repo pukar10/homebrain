@@ -39,6 +39,23 @@ services:
     volumes:
       - homebrain_db:/var/lib/postgresql/data
 
+  ollama:
+    image: ollama/ollama:latest
+    container_name: ollama
+    ports:
+      - "11434:11434"
+    volumes:
+      - /srv/ollama:/root/.ollama
+    restart: unless-stopped
+    envionment:
+      - OLLAMA_KEEP_ALIVE=1h
+    healthcheck:
+      test: ["CMD-SHELL", "ollama list || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 10
+      start_period: 120s
+
   ingest:
     profiles: ["jobs"]
     build:
