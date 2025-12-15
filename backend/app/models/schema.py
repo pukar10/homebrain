@@ -1,8 +1,5 @@
 """
 backend/app/models/schemas.py
-
-- Defines pydantic models
-
 """
 
 from typing import Literal, List, Optional
