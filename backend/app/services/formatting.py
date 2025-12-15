@@ -6,7 +6,7 @@ Helper functions
 
 from typing import List
 from langchain_core.messages import AIMessage, BaseMessage, HumanMessage, ToolMessage
-from backend.app.models.schema import ChatMessage
+from backend.app.schema import ChatMessage
 
 
 def to_chat_messages(messages: List[BaseMessage]) -> List[ChatMessage]:
