@@ -4,7 +4,7 @@ from langgraph.graph import StateGraph, START, END
 from langgraph.prebuilt import ToolNode, tools_condition
 
 from app.agents.rag.state import RAGState
-from app.agents.rag.nodes import rag_agent_node
+from app.agents.rag.nodes import rag_node
 from app.agents.rag.tools import RAG_TOOLS
 
 
@@ -17,7 +17,7 @@ def build_rag_agent_graph(checkpointer=None):
     """
     builder = StateGraph(RAGState)
 
-    builder.add_node("agent", rag_agent_node)
+    builder.add_node("agent", rag_node)
     builder.add_node("tools", ToolNode(RAG_TOOLS))
 
     # Start -> agent

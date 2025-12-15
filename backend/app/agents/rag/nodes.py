@@ -12,7 +12,7 @@ from backend.app.agents.rag.state import RAGState
 # Returns ai reply
 model_with_tools = gemini_llm.bind_tools(RAG_TOOLS)
 
-def rag_agent_node(state: RAGState, config: RunnableConfig):
+def rag_node(state: RAGState, config: RunnableConfig):
     """LLM decides: call tool(s) or respond directly.
 
     Returns:
