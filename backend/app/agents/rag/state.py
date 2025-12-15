@@ -10,5 +10,5 @@ from langchain_core.messages import AnyMessage
 
 
 class RAGState(TypedDict):
-    # List of messages that adds 
+    
     messages: Annotated[list[AnyMessage], add_messages]

@@ -1,22 +1,24 @@
-# app/agents/rag/nodes.py
+"""
+app/agents/rag/nodes.py
+
+Nodes for the RAG agent.
+"""
 
 from langchain_core.messages import SystemMessage
 from langchain_core.runnables import RunnableConfig
 
 from app.core.config import SYSTEM_PROMPT, gemini_llm
 from app.agents.rag.tools import RAG_TOOLS
-from backend.app.agents.rag.state import RAGState
+from app.core.state import GraphState
 
-
-# Bind tools to the base Gemini chat model so it can emit tool_calls
-# Returns ai reply
 model_with_tools = gemini_llm.bind_tools(RAG_TOOLS)
 
-def rag_node(state: RAGState, config: RunnableConfig):
-    """LLM decides: call tool(s) or respond directly.
-
+def rag_node(state: GraphState, config: RunnableConfig):
+    """
+    Generates AI reply and returns an update for state.
+`
     Returns:
-        {"messages": [ai_reply: AnyMessage]}
+        dict: Updated state with AI reply.
     """
     history = state["messages"]
 
