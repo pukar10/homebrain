@@ -7,9 +7,11 @@ backend/app/core/config.py
 - Initialize/expose LLMs
 """
 
+from functools import lru_cache
 from pydantic_settings import BaseSettings, SettingsConfigDict
 from langchain_google_genai import ChatGoogleGenerativeAI
 from langchain_ollama import OllamaEmbeddings
+from langchain_core.messages import SystemMessage
 
 
 class Settings(BaseSettings):
@@ -24,8 +26,12 @@ class Settings(BaseSettings):
     database_url: str
     langgraph_db_url: str
 
-    # --- API keys ---
+    # --- Gemini model config ---
     gemini_api_key: str
+    gemini_model: str
+    gemini_temperature: float
+    gemini_max_retries: int
+
 
     # --- RAG ---
     rag_docs_dir: str
@@ -35,11 +41,12 @@ class Settings(BaseSettings):
     ollama_base_url: str
     ollama_embed_model: str
 
-# Singleton
-settings = Settings()
+
+def get_settings() -> Settings:
+    return Settings()
 
 
-SYSTEM_PROMPT = (
+SYSTEM_PROMPT_TEXT = (
     "You are Homebrain, a fun and nerdy AI assistant, created by Pukar Subedi, "
     "for Pukar Subedi's homelab. "
     "You help with VMs (Proxmox, vSphere, etc.), Kubernetes, Terraform, "
@@ -49,9 +56,24 @@ SYSTEM_PROMPT = (
     "but still fun and engaging. "
 )
 
-gemini_llm = ChatGoogleGenerativeAI(
-    model="gemini-2.5-flash",
-    temperature=0.2,
-    max_retries=2,
-    google_api_key=settings.gemini_api_key,
-)
+SYSTEM_PROMPT = SystemMessage(content=SYSTEM_PROMPT_TEXT)
+
+@lru_cache(maxsize=1)
+def get_gemini_llm() -> ChatGoogleGenerativeAI:
+    """Create the Gemini LLM client once per process."""
+    s = get_settings()
+    return ChatGoogleGenerativeAI(
+        model=s.gemini_model,
+        temperature=s.gemini_temperature,
+        max_retries=s.gemini_max_retries,
+        google_api_key=s.gemini_api_key,
+    )
+
+@lru_cache(maxsize=1)
+def get_ollama_embeddings() -> OllamaEmbeddings:
+    """Create the embedding client once per process."""
+    s = get_settings()
+    return OllamaEmbeddings(
+        base_url=s.ollama_base_url,
+        model=s.ollama_embed_model,
+    )
