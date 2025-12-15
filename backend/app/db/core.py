@@ -1,6 +1,6 @@
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker, DeclarativeBase
-from app.core.config import settings
+from app.config import settings
 
 class Base(DeclarativeBase):
     """Base class for all ORM models."""

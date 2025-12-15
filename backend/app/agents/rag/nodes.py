@@ -7,8 +7,8 @@ Nodes for the RAG agent.
 from langchain_core.messages import SystemMessage
 from langchain_core.runnables import RunnableConfig
 
-from app.core.config import SYSTEM_PROMPT, gemini_llm
-from app.agents.rag.tools import RAG_TOOLS
+from app.config import SYSTEM_PROMPT, gemini_llm
+from backend.app.agents.rag.tools.tools import RAG_TOOLS
 from app.agents.rag.state import RAGState
 
 model_with_tools = gemini_llm.bind_tools(RAG_TOOLS)

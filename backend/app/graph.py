@@ -9,7 +9,7 @@ from contextlib import ExitStack
 
 from langgraph.checkpoint.postgres import PostgresSaver
 
-from app.core.config import settings
+from config import settings
 from app.agents.rag.graph import build_rag_agent_graph
 
 life_stack = ExitStack()
@@ -19,4 +19,5 @@ checkpointer = life_stack.enter_context(
 checkpointer.setup()
 
 # Builds Agentic RAG tool loop
-graph = build_rag_agent_graph(checkpointer=checkpointer)
+#graph = build_rag_agent_graph(checkpointer=checkpointer)
+

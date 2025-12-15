@@ -13,9 +13,9 @@ from langchain_community.document_loaders import DirectoryLoader, TextLoader
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 from langchain_chroma import Chroma
 from langchain_google_genai import GoogleGenerativeAIEmbeddings
-from core.config import ollama_embeddings
+from app.config import ollama_embeddings
 
-from app.core.config import settings
+from app.config import settings
 
 
 DOCS_DIR = Path(settings.rag_docs_dir)

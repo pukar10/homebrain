@@ -5,7 +5,7 @@ from langgraph.prebuilt import ToolNode, tools_condition
 
 from app.agents.rag.state import RAGState
 from app.agents.rag.nodes import rag_node
-from app.agents.rag.tools import RAG_TOOLS
+from backend.app.agents.rag.tools.tools import RAG_TOOLS
 
 
 def build_rag_agent_graph(checkpointer=None):

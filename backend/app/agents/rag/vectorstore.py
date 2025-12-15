@@ -8,7 +8,7 @@ from pathlib import Path
 from functools import lru_cache
 from langchain_ollama import OllamaEmbeddings
 from langchain_chroma import Chroma
-from app.core.config import settings
+from app.config import settings
 
 @lru_cache(maxsize=1)
 def get_vectorstore() -> Chroma:

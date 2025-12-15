@@ -7,7 +7,7 @@ Frontend hits these endpionts to interact with Homebrain backend.
 from fastapi import APIRouter, HTTPException
 from fastapi.responses import StreamingResponse
 
-from app.models.schemas import ChatRequest, ChatResponse
+from backend.app.models.schema import ChatRequest, ChatResponse
 from app.services.chat import chat_turn, chat_turn_stream
 
 

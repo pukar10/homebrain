@@ -11,7 +11,7 @@ from langchain_core.messages import BaseMessage, HumanMessage
 
 from backend.app.services import formatting as fmt
 from app.core.graph import graph
-from app.models.schemas import ChatMessage
+from backend.app.models.schema import ChatMessage
 
 
 ######################################
