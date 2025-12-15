@@ -4,8 +4,3 @@ from langchain_core.messages import AnyMessage
 
 class GraphState(TypedDict, total=False):
     messages: Annotated[list[AnyMessage], add_messages]
-
-    # optional, add later when you need them:
-    # rag_context: str
-    # citations: list[str]
-    # route: str
