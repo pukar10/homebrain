@@ -9,11 +9,11 @@ from langchain_core.runnables import RunnableConfig
 
 from app.core.config import SYSTEM_PROMPT, gemini_llm
 from app.agents.rag.tools import RAG_TOOLS
-from app.core.state import GraphState
+from app.agents.rag.state import RAGState
 
 model_with_tools = gemini_llm.bind_tools(RAG_TOOLS)
 
-def rag_node(state: GraphState, config: RunnableConfig):
+def rag_node(state: RAGState, config: RunnableConfig):
     """
     Generates AI reply and returns an update for state.
 `
