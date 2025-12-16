@@ -1,5 +1,5 @@
 """
-backend/app/models/schemas.py
+backend/app/schemas.py
 """
 
 from typing import Literal, List, Optional
@@ -18,5 +18,5 @@ class ChatRequest(BaseModel):
 
 class ChatResponse(BaseModel):
     reply: str
-    history: List[ChatMessage]
     thread_id: str
+

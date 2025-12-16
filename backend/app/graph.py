@@ -1,5 +1,5 @@
 """
-app/core/graph.py
+app/graph.py
 
 - Creates Postgres checkpointer
 - Build Agentic RAG tool graph
@@ -7,7 +7,7 @@ app/core/graph.py
 
 from contextlib import ExitStack
 from langgraph.checkpoint.postgres import PostgresSaver
-from config import settings
+from app.config import settings
 
 life_stack = ExitStack()
 checkpointer = life_stack.enter_context(
