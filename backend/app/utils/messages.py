@@ -1,9 +1,3 @@
-"""
-backend/app/services/format.py
-
-Helper functions
-"""
-
 from typing import List
 from langchain_core.messages import AIMessage, BaseMessage, HumanMessage, ToolMessage
 from backend.app.schema import ChatMessage
@@ -25,11 +19,8 @@ def to_chat_messages(messages: List[BaseMessage]) -> List[ChatMessage]:
     return chat_messages
 
 
-
-
 def thread_config(thread_id: str) -> dict:
     return {"configurable": {"thread_id": thread_id}}
-
 
 
 def get_last_assistant_reply(messages) -> str:

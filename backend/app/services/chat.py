@@ -10,7 +10,7 @@ from fastapi import HTTPException
 from langchain_core.messages import BaseMessage, HumanMessage
 
 from backend.app.services import formatting as fmt
-from app.core.graph import graph
+from app.graph import graph
 from backend.app.schema import ChatMessage
 
 
