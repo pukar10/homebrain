@@ -9,8 +9,8 @@ import uuid
 from fastapi import HTTPException
 from langchain_core.messages import BaseMessage, HumanMessage
 
-from backend.app.services import formatting as fmt
-from app.core.graph import graph
+from backend.app.services import messages as fmt
+from app.graph import graph
 from backend.app.models.schema import ChatMessage
 
 
