@@ -25,7 +25,6 @@ docker compose -f docker-compose.dev.yaml --profile jobs run --rm ingest
 
 Placeholder
 
-
 ## Checkout
 
 elevenlabs.io  

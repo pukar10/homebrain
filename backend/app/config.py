@@ -1,10 +1,5 @@
 """
 backend/app/core/config.py
-
-- Central app settings using Pydantic BaseSettings
-- Load env vars
-- Define Homebrain system prompt
-- Initialize/expose LLMs
 """
 
 from functools import lru_cache

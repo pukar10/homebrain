@@ -1,8 +1,5 @@
 """
 app/core/graph.py
-
-- Creates Postgres checkpointer
-- Build Agentic RAG tool graph
 """
 
 from contextlib import ExitStack
