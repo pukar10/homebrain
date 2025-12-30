@@ -15,15 +15,25 @@ uvicorn app.main:app --reload --host 0.0.0.0 --port 8001
 # Full Stack Start (prod/dev)
 docker compose up -d --build
 docker compose -f docker-compose.dev.yaml up -d --build
-
-# Run ingestion job for RAG agent (prod/dev)
-docker compose --profile jobs run --rm ingest
-docker compose -f docker-compose.dev.yaml --profile jobs run --rm ingest
 ```
 
 ## Architecture
 
-Placeholder
+```bash
+START
+  ↓
+ingest_message  (normalize input, append to messages)
+  ↓
+router          (classify route + confidence + “needs review?”)
+  ├─→ personal_react_agent
+  ├─→ projects_react_agent
+  ├─→ homelab_react_agent   (tools + RAG + approvals)
+  └─→ general_react_agent
+  ↓
+finalize        (format answer + redact/deny sensitive requests)
+  ↓
+END
+```
 
 ## Checkout
 
