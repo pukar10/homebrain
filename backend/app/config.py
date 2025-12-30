@@ -2,7 +2,7 @@
 backend/app/core/config.py
 """
 
-from functools import lru_cache
+from functools import cache
 from pydantic_settings import BaseSettings, SettingsConfigDict
 from langchain_google_genai import ChatGoogleGenerativeAI
 
@@ -32,12 +32,12 @@ class Settings(BaseSettings):
     # --- Embeddings ---
 
 
-@lru_cache(maxsize=1)
+@cache
 def get_settings() -> Settings:
     return Settings.model_validate({})
 
 
-@lru_cache(maxsize=1)
+@cache
 def get_gemini_llm() -> ChatGoogleGenerativeAI:
     s = get_settings()
     return ChatGoogleGenerativeAI(
