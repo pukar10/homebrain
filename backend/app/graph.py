@@ -1,12 +1,13 @@
 """
-app/core/graph.py
+app/graph.py
+
+Build the top-level Homebrain graph (Supervisor + specialist agents) and compile it.
 """
 
-from contextlib import ExitStack
-
-from langgraph.checkpoint.postgres import PostgresSaver
-
-from config import settings
+from app.persistence import get_checkpointer
+from app.config import get_gemini_llm
+from app.agents.supervisor.graph import build_supervisor_graph
+from app.agents.registry import list_agent_factories
 
 life_stack = ExitStack()
 checkpointer = life_stack.enter_context(

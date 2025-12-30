@@ -1,24 +1,21 @@
 """
 app/services/chat.py
-
 """
 
-from typing import List, Tuple, Generator
 import uuid
-
+from typing import List, Tuple, Generator
 from fastapi import HTTPException
 from langchain_core.messages import BaseMessage, HumanMessage
-
-from backend.app.services import messages as fmt
-from app.graph import graph
-from backend.app.models.schema import ChatMessage
+from app.services import messages as fmt
+from app.graph import 
+from app.models.schema import ChatMessage
 
 
 ######################################
 #  Core                              #
 ######################################
 
-def chat_turn(thread_id: str | None, user_msg: str) -> Tuple[str, List[ChatMessage], str]:
+def chat_turn(graph, thread_id: str | None, user_msg: str) -> Tuple[str, List[ChatMessage], str]:
     """
     Single non-streaming chat turn.
     Returns (ai_reply, new_history, tid)
@@ -58,7 +55,7 @@ def chat_turn(thread_id: str | None, user_msg: str) -> Tuple[str, List[ChatMessa
     return ai_reply, new_history, tid
 
 
-def chat_turn_stream(thread_id: str | None, user_msg: str) -> Tuple[str, Generator[str, None, None]]:
+def chat_turn_stream(graph, thread_id: str | None, user_msg: str) -> Tuple[str, Generator[str, None, None]]:
     """
     Similar to chat_turn, but returns a streaming response generator.
 
