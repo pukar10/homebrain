@@ -170,7 +170,7 @@ function App() {
           </div>
           {/* Subtitle */}
           <div style={{fontSize: '0.75rem', opacity: 0.65, marginTop: '0.2rem'}}>
-            Sessions (no sessions yet)
+            Sessions (comming soon!)
           </div>
         </div>
         {/* new chat button */}
@@ -226,7 +226,7 @@ function App() {
             🧠 Homebrain
           </h1>
           <p style={{ opacity: 0.8, fontSize: '0.9rem' }}>
-            Central Homelab Knowledge ⚪ AI assistant
+            ⚪ AI assistant
           </p>
           {threadId && (
             <p
@@ -311,7 +311,7 @@ function App() {
               </div>
             )}
           </div>
-          
+
           {/* message composer */}
           <form
             onSubmit={handleSubmit}
