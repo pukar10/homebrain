@@ -1,26 +1,10 @@
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import type { FormEvent } from 'react'
 
 type Message = {
   id: number
   role: 'user' | 'assistant'
   text: string
-}
-
-type ChatMessage = {
-  role: 'user' | 'assistant' | 'system'
-  content: string
-}
-
-type SessionSummary = {
-  thread_id: string
-  created_at: string
-}
-
-type SessionDetail = {
-  thread_id: string
-  created_at: string
-  messages: ChatMessage[]
 }
 
 function App() {
@@ -31,82 +15,16 @@ function App() {
   const [isLoading, setIsLoading] = useState(false)
   const [threadId, setThreadId] = useState<string | null>(null)
 
-  const [sessions, setSessions] = useState<SessionSummary[]>([])
-  const [isLoadingSessions, setIsLoadingSessions] = useState(false)
-
-
   
   // --- Helpers ---
-
-  const formatDate = (iso: string) => {
-    try {
-      const d = new Date(iso)
-      return d.toLocaleString(undefined, {
-        month: 'short',
-        day: 'numeric',
-        hour: '2-digit',
-        minute: '2-digit',
-      })
-    } catch {
-      return iso
-    }
+  const handleNewChat = () => {
+    setThreadId(null)
+    setMessages([])
+    setInput('')
   }
 
 
-  const mapChatMessagesToUI = (msgs: ChatMessage[]): Message[] =>
-    msgs.map((m, index) => ({
-      id: index,
-      role: m.role === 'user' ? 'user' : 'assistant',
-      text: m.content,
-    }))
-
-
-
-  // --- API calls ---
-
-  const fetchSessions = async () => {
-    try {
-      setIsLoadingSessions(true)
-      const res = await fetch('/api/sessions')
-      if (!res.ok) {
-        throw new Error(`Failed to fetch sessions: ${res.status}`)
-      }
-      const data: SessionSummary[] = await res.json()
-      setSessions(data)
-    } catch (err) {
-      console.error('Error fetching sessions:', err)
-    } finally {
-      setIsLoadingSessions(false)
-    }
-  }
-
-  const fetchSessionDetail = async (id: string) => {
-    try {
-      setIsLoading(true)
-      const res = await fetch(`/api/sessions/${id}`)
-      if (!res.ok) {
-        throw new Error(`Failed to fetch session detail: ${res.status}`)
-      }
-      const data: SessionDetail = await res.json()
-
-      const mappedMessages = mapChatMessagesToUI(data.messages)
-      setMessages(mappedMessages)
-      setThreadId(data.thread_id)
-    } catch (err) {
-      console.error('Error fetching session detail:', err)
-    } finally {
-      setIsLoading(false)
-    }
-  }
-
-  // Load sessions once on mount
-  useEffect(() => {
-    fetchSessions()
-  }, [])
-
-
-
-// --- Event handlers ---
+  // --- Event handlers ---
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault()
@@ -114,14 +32,12 @@ function App() {
     const userInput = input.trim()
     if (!userInput) return
 
-    // Optimistic UI update with user message
     const userMessage: Message = {
       id: Date.now(),
       role: 'user',
       text: userInput,
     }
 
-    // Placeholder assistant message while waiting for backend
     const assistantMessage: Message = {
       id: Date.now() + 1,
       role: 'assistant',
@@ -157,10 +73,7 @@ function App() {
         if (done) break
 
         buffer += decoder.decode(value, { stream: true })
-
-        // Server is sending SSE-style chunks: "data: ...\n\n"
         const parts = buffer.split('\n\n')
-        // Last piece may be incomplete; keep it in buffer
         buffer = parts.pop() ?? ''
 
         for (const part of parts) {
@@ -176,7 +89,6 @@ function App() {
               setThreadId(newThreadId)
             }
             // Refresh session list when a turn is fully complete
-            fetchSessions()
             continue
           }
 
@@ -195,7 +107,6 @@ function App() {
     } catch (error) {
         console.error('Error during streaming chat:', error)
 
-      // Replace the placeholder assistant message with an error message
       setMessages(prev => [
         ...prev.filter(m => m.id !== currentAssistantId),
         {
@@ -211,24 +122,8 @@ function App() {
   }
 
 
-
-  const handleSelectSession = (id: string) => {
-    fetchSessionDetail(id)
-  }
-
-
-  const handleNewChat = () => {
-    // Let backend create a new thread_id on next /api/chat* call
-    setThreadId(null)
-    setMessages([])
-    setInput('')
-  }
-
-
-
-  // --- Render ---
-
   return (
+    // Main container (left sidebar + main chat)
     <div
       style={{
         minHeight: '100vh',
@@ -238,7 +133,7 @@ function App() {
         display: 'flex',
       }}
     >
-      {/* Sidebar */}
+      {/* LEFT SIDEBAR */}
       <aside
         style={{
           width: '260px',
@@ -251,7 +146,7 @@ function App() {
           background: 'radial-gradient(circle at top, #111827 0, #020617 55%)',
         }}
       >
-        {/* Brand */}
+        {/* header */}
         <div>
           <div
             style={{
@@ -273,18 +168,12 @@ function App() {
             />
             <span>Homebrain</span>
           </div>
-          <div
-            style={{
-              fontSize: '0.75rem',
-              opacity: 0.65,
-              marginTop: '0.2rem',
-            }}
-          >
-            Sessions
+          {/* Subtitle */}
+          <div style={{fontSize: '0.75rem', opacity: 0.65, marginTop: '0.2rem'}}>
+            Sessions (no sessions yet)
           </div>
         </div>
-
-        {/* New chat button */}
+        {/* new chat button */}
         <button
           type="button"
           onClick={handleNewChat}
@@ -309,80 +198,7 @@ function App() {
           <span>＋</span>
           <span>New chat</span>
         </button>
-
-        {/* Session list */}
-        <div
-          style={{
-            flex: 1,
-            overflowY: 'auto',
-            paddingRight: '0.25rem',
-            marginTop: '0.25rem',
-          }}
-        >
-          {isLoadingSessions && (
-            <div style={{ fontSize: '0.8rem', opacity: 0.7 }}>
-              Loading sessions…
-            </div>
-          )}
-
-          {!isLoadingSessions && sessions.length === 0 && (
-            <div style={{ fontSize: '0.8rem', opacity: 0.7 }}>
-              No sessions yet. Start a chat to create one.
-            </div>
-          )}
-
-          {!isLoadingSessions &&
-            sessions.map(session => {
-              const isActive = session.thread_id === threadId
-
-              return (
-                <button
-                  key={session.thread_id}
-                  type="button"
-                  onClick={() => handleSelectSession(session.thread_id)}
-                  style={{
-                    width: '100%',
-                    textAlign: 'left',
-                    border: 'none',
-                    backgroundColor: isActive ? '#111827' : 'transparent',
-                    borderRadius: '0.6rem',
-                    padding: '0.55rem 0.6rem',
-                    marginBottom: '0.25rem',
-                    cursor: 'pointer',
-                    borderColor: isActive ? '#4b5563' : 'transparent',
-                    borderStyle: 'solid',
-                    borderWidth: '1px',
-                    display: 'flex',
-                    flexDirection: 'column',
-                    gap: '0.15rem',
-                    transition: 'background-color 120ms ease, border-color 120ms ease, transform 80ms ease',
-                  }}
-                >
-                  <div
-                    style={{
-                      fontSize: '0.8rem',
-                      fontWeight: 500,
-                      whiteSpace: 'nowrap',
-                      overflow: 'hidden',
-                      textOverflow: 'ellipsis',
-                    }}
-                  >
-                    {session.thread_id.slice(0, 8)}…
-                  </div>
-                  <div
-                    style={{
-                      fontSize: '0.7rem',
-                      opacity: 0.6,
-                    }}
-                  >
-                    {formatDate(session.created_at)}
-                  </div>
-                </button>
-              )
-            })}
-        </div>
-
-        {/* Small footer label */}
+        {/* footer label */}
         <div
           style={{
             fontSize: '0.7rem',
@@ -393,7 +209,7 @@ function App() {
         </div>
       </aside>
 
-      {/* Main chat area */}
+      {/* CHAT AREA */}
       <main
         style={{
           flex: 1,
@@ -403,8 +219,9 @@ function App() {
           boxSizing: 'border-box',
         }}
       >
-        {/* Header */}
-        <header style={{ marginBottom: '1rem' }}>
+        {/* header */}
+        <header style={{ marginBottom: '1rem' }}
+        >
           <h1 style={{ fontSize: '1.75rem', marginBottom: '0.25rem' }}>
             🧠 Homebrain
           </h1>
@@ -426,8 +243,7 @@ function App() {
             </p>
           )}
         </header>
-
-        {/* Chat container */}
+        {/* chat container */}
         <div
           style={{
             flex: 1,
@@ -439,7 +255,7 @@ function App() {
             padding: '0.75rem',
           }}
         >
-          {/* Scrollable messages */}
+          {/* message list */}
           <div
             style={{
               flex: 1,
@@ -495,8 +311,8 @@ function App() {
               </div>
             )}
           </div>
-
-          {/* Input bar */}
+          
+          {/* message composer */}
           <form
             onSubmit={handleSubmit}
             style={{
@@ -507,6 +323,7 @@ function App() {
               marginTop: '0.5rem',
             }}
           >
+            {/* Input field */}
             <input
               type="text"
               value={input}
@@ -522,6 +339,7 @@ function App() {
                 fontSize: '0.9rem',
               }}
             />
+            {/* submit button */}
             <button
               type="submit"
               disabled={isLoading}
