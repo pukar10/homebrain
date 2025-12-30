@@ -138,8 +138,7 @@ def interrupt_for_route(original_text: str) -> Route:
         }
     )
 
-    # On resume, `choice` is whatever the user supplied.
     if choice in ("personal", "projects", "homelab", "general"):
-        return choice  # type: ignore[return-value]
+        return choice
 
     return "general"
