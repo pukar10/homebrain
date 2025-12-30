@@ -8,7 +8,7 @@ from fastapi import HTTPException
 from langchain_core.messages import BaseMessage, HumanMessage
 from app.services import messages as fmt
 from app.graph import 
-from app.models.schema import ChatMessage
+from backend.app.schemas.api import ChatMessage
 
 
 ######################################
