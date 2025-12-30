@@ -268,7 +268,7 @@ function App() {
           >
             {messages.length === 0 ? (
               <span style={{ opacity: 0.7, fontSize: '0.9rem' }}>
-                No messages yet. Type something below to get started.
+                Hello! How can I help today? I can answer questions about Pukar’s homelab, or share more about him and his work.
               </span>
             ) : (
               messages.map(message => (
