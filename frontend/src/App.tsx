@@ -8,7 +8,6 @@ type Message = {
 }
 
 function App() {
-
   const [messages, setMessages] = useState<Message[]>([])
   const [input, setInput] = useState('')
   
@@ -25,7 +24,6 @@ function App() {
 
 
   // --- Event handlers ---
-
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault()
 
@@ -59,7 +57,7 @@ function App() {
           thread_id: threadId,
         }),
       })
-
+      
       if (!res.ok || !res.body) {
         throw new Error(`Server error! status: ${res.status}`)
       }

@@ -1,7 +1,5 @@
 """
 app/api/chat.py
-
-Frontend hits these endpionts to interact with Homebrain backend.
 """
 
 from fastapi import APIRouter, HTTPException
