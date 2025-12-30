@@ -5,8 +5,6 @@ backend/app/core/config.py
 from functools import lru_cache
 from pydantic_settings import BaseSettings, SettingsConfigDict
 from langchain_google_genai import ChatGoogleGenerativeAI
-from langchain_ollama import OllamaEmbeddings
-
 
 class Settings(BaseSettings):
     
