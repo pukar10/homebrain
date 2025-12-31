@@ -11,7 +11,7 @@ import logging
 from dataclasses import dataclass
 from typing import Any
 from app.llms.gemini import build_gemini_llm
-from app.persistence import get_checkpointer
+from app.persistence import create_checkpointer
 from app.agents.homebrain.graph import build_graph
 from backend.app.settings import Settings
 
@@ -47,7 +47,7 @@ class Runtime:
 
 def create_runtime(settings: Settings) -> Runtime:
     llm = build_gemini_llm(settings)
-    checkpointer = get_checkpointer()
+    checkpointer = create_checkpointer(settings)
     graph = build_graph(llm=llm, checkpointer=checkpointer)
 
     return Runtime(settings=settings, llm=llm, checkpointer=checkpointer, graph=graph)

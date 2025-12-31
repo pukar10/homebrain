@@ -11,7 +11,7 @@ from backend.app.agents.homebrain.state import HomebrainState, Route
 from app.agents.utils.messages import last_human_text
 
 
-logger = logging.getLogger(__name__)
+log = logging.getLogger(__name__)
 
 
 ROUTE_TO_NODE: dict[Route, str] = {
@@ -114,7 +114,7 @@ def classify(structured_router: Any, text: str) -> RouteDecision:
         return decision
 
     except Exception as e:
-        logger.exception("Router classify failed; falling back to general. Error=%s", e)
+        log.exception("Router classify failed; falling back to general. Error=%s", e)
         return RouteDecision(
             route="general",
             confidence=0.1,

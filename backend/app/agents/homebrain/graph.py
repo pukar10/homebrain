@@ -8,14 +8,13 @@ from dataclasses import dataclass, field
 from typing import Any, Mapping, Sequence
 from langgraph.graph import END, START, StateGraph
 from langgraph.types import RetryPolicy
-from backend.app.settings import get_gemini_llm
 from app.persistence import get_checkpointer
 from backend.app.agents.homebrain.state import HomebrainState
 # Import nodes: ingest, router, finalize
 # Import agents + prompts: personal, projects, homelab, general
 
 
-logger = logging.getLogger(__name__)
+log = logging.getLogger(__name__)
 
 
 """

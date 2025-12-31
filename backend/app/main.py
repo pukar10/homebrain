@@ -4,17 +4,14 @@ Holds FastAPI app wiring: creates web app and connects it to runtime.
 - Create FastAPI instance
 - register routers/middleware
 - run startup/shutdown (lifespan) to initialize runtime and store in app.homebrain.state
-- 
 """
 import logging
 from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from app.api.chat import router as chat_router
 from app.db.core import Base, engine
-from app.agents.homebrain.graph import build_graph
-from app.persistence import get_checkpointer
-from backend.app.bootstrap import create_runtime
-from backend.app.settings import get_settings
+from app.bootstrap import create_runtime
+from app.settings import get_settings
 
 log = logging.getLogger(__name__)
 

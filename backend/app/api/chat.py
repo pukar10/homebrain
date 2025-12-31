@@ -5,7 +5,6 @@ import json
 import logging
 from fastapi import APIRouter, HTTPException, Request
 from fastapi.responses import StreamingResponse
-
 from app.schemas.api import ChatRequest
 from app.services.chat import chat_turn_stream
 

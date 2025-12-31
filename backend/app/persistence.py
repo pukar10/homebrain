@@ -2,61 +2,48 @@
 app/persistence.py
 """
 import logging
-from functools import cache
-from typing import Optional
-from psycopg import Connection
-from psycopg.rows import dict_row, DictRow
+from dataclasses import dataclass
+from typing import Any, cast
+from psycopg.rows import dict_row
 from psycopg_pool import ConnectionPool
-
 from langgraph.checkpoint.memory import InMemorySaver
 from langgraph.checkpoint.postgres import PostgresSaver
-from backend.app.settings import get_settings
+from app.settings import Settings
 
 
-logger = logging.getLogger(__name__)
-pool: Optional[ConnectionPool[Connection[DictRow]]] = None
+log = logging.getLogger(__name__)
+
+@dataclass
+class CheckpointerResource:
+    checkpointer: Any
+    pool: Any = None
+
+    def close(self) -> None:
+        if self.pool is not None:
+            try:
+                self.pool.close()
+            except Exception:
+                log.exception("failed to close checkpointer pool")
+            self.pool = None
 
 
-"""
-Singleton checkpointer
-
-- InMemorySaver if no DB URL.
-- PostgresSaver in prod.
-- .setup() only runs if enabled via settings.
-"""
-@cache
-def get_checkpointer():
-    global pool
-    s = get_settings()
-
-    db_url = getattr(s, "langgraph_db_url", None)
+def create_checkpointer(settings: Settings) -> CheckpointerResource:
+    """
+    - InMemorySaver if no DB URL.
+    - PostgresSaver if langgraph_db_url is set.
+    """
+    db_url = getattr(settings, "langgraph_db_url", None)
     if not db_url:
-        logger.info("LangGraph: using InMemorySaver (no langgraph_db_url).")
-        return InMemorySaver()
+        log.info("LangGraph: using InMemorySaver (no langgraph_db_url).")
+        return CheckpointerResource(checkpointer=InMemorySaver())
 
-    logger.info("LangGraph: using PostgresSaver.")
+    log.info("LangGraph: using PostgresSaver.")
     pool = ConnectionPool(
         conninfo=db_url,
         max_size=10,
         max_idle=300,
         timeout=30,
-        kwargs={
-            "autocommit": True,
-            "row_factory": dict_row,
-        },
+        kwargs={"autocommit": True, "row_factory": dict_row},
     )
-
-    cp = PostgresSaver(pool)
-
-    if bool(getattr(s, "langgraph_init_db", False)):
-        logger.info("LangGraph: running checkpointer.setup()")
-        cp.setup()
-
-    return cp
-
-
-def close_checkpointer() -> None:
-    global pool
-    if pool is not None:
-        pool.close()
-        pool = None
+    cp = PostgresSaver(cast(Any, pool))
+    return CheckpointerResource(checkpointer=cp, pool=pool)
