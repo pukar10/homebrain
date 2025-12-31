@@ -10,7 +10,7 @@ from langgraph.graph import END, START, StateGraph
 from langgraph.types import RetryPolicy
 from app.config import get_gemini_llm
 from app.persistence import get_checkpointer
-from app.state import HomebrainState
+from backend.app.agents.homebrain.state import HomebrainState
 # Import nodes: ingest, router, finalize
 # Import agents + prompts: personal, projects, homelab, general
 
