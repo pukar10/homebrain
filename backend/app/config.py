@@ -1,5 +1,5 @@
 """
-backend/app/core/config.py
+app/config.py
 """
 
 from functools import cache

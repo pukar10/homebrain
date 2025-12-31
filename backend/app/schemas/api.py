@@ -1,5 +1,5 @@
 """
-app.schemas.api.py
+app/schemas/api.py
 """
 from typing import Literal, Optional
 from pydantic import BaseModel, Field

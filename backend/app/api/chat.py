@@ -1,5 +1,5 @@
 """
-app.api.chat.py
+app/api/chat.py
 """
 import json
 import logging

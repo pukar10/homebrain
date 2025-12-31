@@ -10,7 +10,7 @@ from app.agents.utils.messages import content_to_text, thread_config
 
 log = logging.getLogger(__name__)
 
-def chat_turn_stream(graph, thread_id: str | None, user_msg: str) -> Tuple[str, Generator[str, None, None]]:
+def chat_turn_stream(thread_id: str | None, user_msg: str) -> Tuple[str, Generator[str, None, None]]:
     """
     Initiates a chat turn in streaming mode.
 
@@ -31,7 +31,6 @@ def chat_turn_stream(graph, thread_id: str | None, user_msg: str) -> Tuple[str, 
 
     def token_generator() -> Generator[str, None, None]:
         emitted_any = False
-        
         try:
             for msg_chunk, metadata in graph.stream(
                 {"messages": [HumanMessage(content=user_msg)]},
