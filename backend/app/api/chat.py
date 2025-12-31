@@ -3,8 +3,9 @@ app/api/chat.py
 """
 import json
 import logging
-from fastapi import APIRouter, HTTPException, Request
+from fastapi import Depends, APIRouter, HTTPException, Request
 from fastapi.responses import StreamingResponse
+from app.api.deps import get_graph
 from app.schemas.api import ChatRequest
 from app.services.chat import chat_turn_stream
 
@@ -22,7 +23,7 @@ def health():
 
 
 @router.post("/chat/stream")
-async def chat_stream(chat_request: ChatRequest, request: Request) -> StreamingResponse:
+async def chat_stream(chat_request: ChatRequest, request: Request, graph=Depends(get_graph)) -> StreamingResponse:
     """
     Streams chat responses using Server-Sent Events (SSE).
     - SSE events are sent as JSON payloads
@@ -32,7 +33,7 @@ async def chat_stream(chat_request: ChatRequest, request: Request) -> StreamingR
     - request: FastAPI Request object to check for client disconnection.
     Returns: StreamingResponse object that streams tokens as they are generated.
     """
-    thread_id, token_gen = chat_turn_stream(chat_request.thread_id, chat_request.message)
+    thread_id, token_gen = chat_turn_stream(graph, chat_request.thread_id, chat_request.message)
 
     log.info("chat stream start", extra={"thread_id": thread_id, "msg_len": len(chat_request.message)})
 

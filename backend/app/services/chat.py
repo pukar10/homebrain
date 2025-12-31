@@ -10,12 +10,11 @@ from app.agents.utils.messages import content_to_text, thread_config
 
 log = logging.getLogger(__name__)
 
-def chat_turn_stream(thread_id: str | None, user_msg: str) -> Tuple[str, Generator[str, None, None]]:
+def chat_turn_stream(graph, thread_id: str | None, user_msg: str) -> Tuple[str, Generator[str, None, None]]:
     """
     Initiates a chat turn in streaming mode.
 
     Params:
-    - graph: The LangChain graph instance to process the chat.
     - thread_id: Optional thread ID for the chat session.
     - user_msg: The user's message to process.
     Returns: tid, token_generator

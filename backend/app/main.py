@@ -5,7 +5,7 @@ Holds FastAPI app wiring: creates web app and connects it to runtime.
 - register routers/middleware
 - run startup/shutdown (lifespan) to initialize runtime and store in app.homebrain.state
 """
-import logging
+import logging 
 from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from app.api.chat import router as chat_router

@@ -12,8 +12,8 @@ from dataclasses import dataclass
 from typing import Any
 from app.llms.gemini import build_gemini_llm
 from app.persistence import create_checkpointer
-from app.agents.homebrain.graph import build_graph
-from backend.app.settings import Settings
+from app.workflow.agents.homebrain.graph import build_graph
+from app.settings import Settings
 
 log = logging.getLogger(__name__)
 
