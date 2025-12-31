@@ -1,10 +1,8 @@
 """
-app/config.py
+app/settings.py
 """
-
 from functools import cache
 from pydantic_settings import BaseSettings, SettingsConfigDict
-from langchain_google_genai import ChatGoogleGenerativeAI
 
 class Settings(BaseSettings):
     

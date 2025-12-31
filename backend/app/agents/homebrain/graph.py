@@ -8,7 +8,7 @@ from dataclasses import dataclass, field
 from typing import Any, Mapping, Sequence
 from langgraph.graph import END, START, StateGraph
 from langgraph.types import RetryPolicy
-from app.config import get_gemini_llm
+from backend.app.settings import get_gemini_llm
 from app.persistence import get_checkpointer
 from backend.app.agents.homebrain.state import HomebrainState
 # Import nodes: ingest, router, finalize
@@ -43,11 +43,8 @@ Parent graph: ingest → router → specialist → finalize
 - Agents are nodes
 - Agents are ReAct-style (use tools, reason, act, observe, repeat until confidence is high enough)
 """
-def build_graph(cfg: GraphConfig | None = None):
+def build_graph(*, llm: Any, checkpointer: Any, cfg: GraphConfig | None = None):
     cfg = cfg or GraphConfig()
-
-    llm = get_gemini_llm()
-    checkpointer = get_checkpointer()
 
     router_node = make_router_node(
         llm=llm,

@@ -10,7 +10,7 @@ from psycopg_pool import ConnectionPool
 
 from langgraph.checkpoint.memory import InMemorySaver
 from langgraph.checkpoint.postgres import PostgresSaver
-from app.config import get_settings
+from backend.app.settings import get_settings
 
 
 logger = logging.getLogger(__name__)
