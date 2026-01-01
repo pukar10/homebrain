@@ -1,5 +1,6 @@
 """
 app/api/chat.py
+- Utilize Depends() for dependency injections like LLM clients, tool registries, tenant policy, rate limiters, checkpointers, vector store clients.
 """
 import json
 import logging

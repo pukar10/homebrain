@@ -1,9 +1,8 @@
 """
 app/main.py
-Holds FastAPI app wiring: creates web app and connects it to runtime.
-- Create FastAPI instance
+FastAPI: creates web app and connects it to runtime.
+- Utilize lifespan for statup/shutdown + singletons like DB engine, Redis, vector store client, model client pools, prompt catalogs, telemetry.
 - register routers/middleware
-- run startup/shutdown (lifespan) to initialize runtime and store in app.homebrain.state
 """
 import logging 
 from contextlib import asynccontextmanager
