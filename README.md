@@ -3,6 +3,9 @@
 ### Local Dev
 
 ```bash
+# Install project dependencies
+pip install -e .
+
 # Fontend React (port 4000)
 npm run dev
 
