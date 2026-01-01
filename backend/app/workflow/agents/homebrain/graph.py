@@ -12,6 +12,9 @@ from app.workflow.nodes.router import make_router_node
 from app.workflow.nodes.ingest import ingest
 from app.workflow.nodes.finalize import finalize
 from app.workflow.agents.homebrain.state import HomebrainState
+from backend.app.persistence import CheckpointerResource
+from langchain_core.language_models.chat_models import BaseChatModel
+
 # Import nodes: ingest, router, finalize
 # Import agents + prompts: personal, projects, homelab, general
 
@@ -44,7 +47,7 @@ Parent graph: ingest → router → specialist → finalize
 - Agents are nodes
 - Agents are ReAct-style (use tools, reason, act, observe, repeat until confidence is high enough)
 """
-def build_graph(*, llm: Any, checkpointer: Any, cfg: GraphConfig | None = None):
+def build_graph(*, llm: BaseChatModel, checkpointerResource: CheckpointerResource, cfg: GraphConfig | None = None):
     cfg = cfg or GraphConfig()
 
     router_node = make_router_node(
@@ -77,4 +80,4 @@ def build_graph(*, llm: Any, checkpointer: Any, cfg: GraphConfig | None = None):
 
     g.add_edge("finalize", END)
 
-    return g.compile(checkpointer=checkpointer)
+    return g.compile(checkpointer=checkpointerResource.checkpointer)
