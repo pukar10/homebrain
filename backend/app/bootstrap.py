@@ -23,11 +23,11 @@ log = logging.getLogger(__name__)
 class Runtime:
     settings: Settings
     llm: Any
-    checkpointer: CheckpointerResource 
+    checkpointer_resource: CheckpointerResource
     graph: Any
 
     def close(self) -> None:
-        self.checkpointer.close()
+        self.checkpointer_resource.checkpointer.close()
 
 
 def create_runtime(settings: Settings) -> Runtime:
@@ -36,11 +36,7 @@ def create_runtime(settings: Settings) -> Runtime:
     checkpointer_resource = create_checkpointer_resource(settings)
     checkpointer = checkpointer_resource.checkpointer
 
-    cfg = GraphConfig(
-        min_confidence=0.55,
-        interrupt_on_ambiguity=True,
-    )
-
+    cfg = GraphConfig(min_confidence=0.55, interrupt_on_ambiguity=True)
     graph = build_graph(llm=llm, checkpointer=checkpointer, cfg=cfg)
 
-    return Runtime(settings=settings, llm=llm, checkpointer=checkpointer, graph=graph)
+    return Runtime(settings=settings, llm=llm, checkpointer_resource=checkpointer_resource, graph=graph)

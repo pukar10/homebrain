@@ -1,7 +1,9 @@
 """
 app/main.py
 FastAPI: creates web app and connects it to runtime.
-- Utilize lifespan for statup/shutdown + singletons like DB engine, Redis, vector store client, model client pools, prompt catalogs, telemetry.
+- Utilize lifespan for statup/shutdown + singletons like DB engine, Redis, vector store client, LLM client wrapper, HTTP client pools, 
+model client pools, prompt catalogs, telemetry.
+- attach to app.state.*
 - register routers/middleware
 """
 import logging 
