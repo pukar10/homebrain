@@ -11,7 +11,7 @@ import logging
 from dataclasses import dataclass
 from typing import Any
 from app.llms.gemini import build_gemini_llm
-from app.persistence import create_checkpointer
+from app.persistence import create_checkpointer, CheckpointerResource
 from app.workflow.agents.homebrain.graph import build_graph
 from app.settings import Settings
 
@@ -22,27 +22,11 @@ log = logging.getLogger(__name__)
 class Runtime:
     settings: Settings
     llm: Any
-    checkpointer: Any
+    checkpointer: CheckpointerResource 
     graph: Any
 
     def close(self) -> None:
-        cp = self.checkpointer
-        if cp is None:
-            return
-        
-        pool = getattr(cp, "pool", None)
-        if pool is not None:
-            try:
-                pool.close()
-            except Exception:
-                log.exception("failed to close checkpointer pool")
-
-        close_fn = getattr(cp, "close", None)
-        if callable(close_fn):
-            try:
-                close_fn()
-            except Exception:
-                log.exception("failed to close checkpointer")
+        self.checkpointer.close()
 
 
 def create_runtime(settings: Settings) -> Runtime:

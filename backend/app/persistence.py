@@ -16,7 +16,7 @@ log = logging.getLogger(__name__)
 @dataclass
 class CheckpointerResource:
     checkpointer: Any
-    pool: Any = None
+    pool: Any | None = None
 
     def close(self) -> None:
         if self.pool is not None:
@@ -24,7 +24,15 @@ class CheckpointerResource:
                 self.pool.close()
             except Exception:
                 log.exception("failed to close checkpointer pool")
-            self.pool = None
+            finally:
+                self.pool = None
+
+        close_fn = getattr(self.checkpointer, "close", None)
+        if callable(close_fn):
+            try:
+                close_fn()
+            except Exception:
+                log.exception("failed to close checkpointer")
 
 
 def create_checkpointer(settings: Settings) -> CheckpointerResource:
