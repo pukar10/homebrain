@@ -11,14 +11,14 @@ class Base(DeclarativeBase):
     """Base class for all ORM models."""
     pass
 
-engine = create_engine(
+SQLengine = create_engine(
     settings.database_url,
     echo=False,
     future=True,
 )
 
 SessionLocal = sessionmaker(
-    bind=engine, 
+    bind=SQLengine, 
     autoflush=False, 
     autocommit=False,
 )

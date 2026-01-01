@@ -2,7 +2,7 @@
 app/schemas/routing.py
 """
 from pydantic import BaseModel, Field
-from backend.app.agents.homebrain.state import Route
+from app.workflow.agents.homebrain.state import Route
 
 
 class RouteDecision(BaseModel):

@@ -9,10 +9,11 @@ from fastapi import Depends, APIRouter, HTTPException, Request
 from fastapi.responses import StreamingResponse
 from app.api.deps import get_graph
 from app.schemas.api import ChatRequest
+from app.schemas.events import TokenEvent, DoneEvent, ErrorEvent
 from app.services.chat import chat_turn_stream
 
-log = logging.getLogger(__name__)
 
+log = logging.getLogger(__name__)
 router = APIRouter(prefix="/api", tags=["chat"])
 
 
@@ -22,6 +23,11 @@ def health():
         "status": "ok",
         "service": "homebrain-backend",
     }
+
+
+def sse(model) -> str:
+    payload = model.model_dump()
+    return f"data: {json.dumps(payload)}\n\n"
 
 
 @router.post("/chat/stream")

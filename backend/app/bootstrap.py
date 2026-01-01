@@ -27,7 +27,7 @@ class Runtime:
     graph: Any
 
     def close(self) -> None:
-        self.checkpointer_resource.checkpointer.close()
+        self.checkpointer_resource.close()
 
 
 def create_runtime(settings: Settings) -> Runtime:
