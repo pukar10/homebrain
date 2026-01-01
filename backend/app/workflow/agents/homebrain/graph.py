@@ -10,6 +10,7 @@ from langgraph.graph import END, START, StateGraph
 from langgraph.types import RetryPolicy
 from app.workflow.nodes.router import make_router_node
 from app.workflow.nodes.ingest import ingest
+from app.workflow.nodes.finalize import finalize
 from app.workflow.agents.homebrain.state import HomebrainState
 # Import nodes: ingest, router, finalize
 # Import agents + prompts: personal, projects, homelab, general
@@ -62,7 +63,7 @@ def build_graph(*, llm: Any, checkpointer: Any, cfg: GraphConfig | None = None):
     g.add_node("ingest", ingest)
     g.add_node("router", router_node, retry_policy=router_retry)
 
-    g.add_node("finalize", finalize_node)
+    g.add_node("finalize", finalize)
 
     # Edges
     g.add_edge(START, "ingest")
