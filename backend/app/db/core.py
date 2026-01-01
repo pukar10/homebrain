@@ -1,6 +1,9 @@
+"""
+app/db/core.py
+"""
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker, DeclarativeBase
-from app.config import get_settings
+from backend.app.settings import get_settings
 
 settings = get_settings()
 

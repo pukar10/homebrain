@@ -1,10 +1,8 @@
 """
-backend/app/core/config.py
+app/settings.py
 """
-
 from functools import cache
 from pydantic_settings import BaseSettings, SettingsConfigDict
-from langchain_google_genai import ChatGoogleGenerativeAI
 
 class Settings(BaseSettings):
     
@@ -35,14 +33,3 @@ class Settings(BaseSettings):
 @cache
 def get_settings() -> Settings:
     return Settings.model_validate({})
-
-
-@cache
-def get_gemini_llm() -> ChatGoogleGenerativeAI:
-    s = get_settings()
-    return ChatGoogleGenerativeAI(
-        model=s.gemini_model,
-        temperature=s.gemini_temperature,
-        max_retries=s.gemini_max_retries,
-        google_api_key=s.gemini_api_key,
-    )
