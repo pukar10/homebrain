@@ -11,14 +11,6 @@ from app.workflow.utils.messages import content_to_text, thread_config
 log = logging.getLogger(__name__)
 
 def chat_turn_stream(graph, thread_id: str | None, user_msg: str) -> Tuple[str, Generator[str, None, None]]:
-    """
-    Initiates a chat turn in streaming mode.
-
-    Params:
-    - thread_id: Optional thread ID for the chat session.
-    - user_msg: The user's message to process.
-    Returns: tid, token_generator
-    """
     user_msg = user_msg.strip()
     if not user_msg:
         raise HTTPException(status_code=400, detail="Empty message is not allowed.")
@@ -48,15 +40,10 @@ def chat_turn_stream(graph, thread_id: str | None, user_msg: str) -> Tuple[str, 
                 emitted_any = True
                 yield text
 
-                log.info(
-                    "chat_turn_stream completed",
-                    extra={"thread_id": tid, "emitted_any": emitted_any},
-                )
-
+            log.info("chat_turn_stream completed", extra={"thread_id": tid, "emitted_any": emitted_any})
         except HTTPException:
             log.warning("chat_turn_stream HTTPException", extra={"thread_id": tid})
             raise
-
         except Exception:
             log.exception("chat_turn_stream failed", extra={"thread_id": tid})
             yield "\n[error] Streaming failed\n"

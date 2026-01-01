@@ -70,10 +70,10 @@ async def chat_stream(chat_request: ChatRequest, request: Request, graph=Depends
                 yield sse({"type": "done", "thread_id": thread_id})
         except HTTPException as e:
             log.warning("SSE stream HTTPException", extra={"thread_id": thread_id, "status": e.status_code})
-            yield sse({"type": "error", "message": e.detail})
+            yield sse({"type": "error", "message": e.detail, "status": e.status_code, "thread_id": thread_id})
         except Exception:
             log.exception("SSE stream failed", extra={"thread_id": thread_id})
-            yield sse({"type": "error", "message": "stream failed"})
+            yield sse({"type": "error", "message": "stream failed", "thread_id": thread_id})
 
     headers = {
         "Cache-Control": "no-cache",
