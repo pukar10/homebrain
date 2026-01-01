@@ -23,11 +23,11 @@ async def lifespan(app: FastAPI):
     app.state.settings = settings
 
     # Dev-friendly. In prod, replace with Alembic migrations.
+    # consider wrapping in conditional to avoid running every startup
     Base.metadata.create_all(bind=engine)
 
     runtime = create_runtime(settings)
     app.state.runtime = runtime
-    app.state.graph = runtime.graph
 
     try:
         yield

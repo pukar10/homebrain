@@ -2,6 +2,8 @@
 app/settings.py
 """
 from functools import cache
+from typing import Optional
+from pydantic import SecretStr
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 class Settings(BaseSettings):
@@ -14,10 +16,10 @@ class Settings(BaseSettings):
 
     # --- Database ---
     database_url: str
-    langgraph_db_url: str
+    langgraph_db_url: Optional[str] = None
 
     # --- Gemini model config ---
-    gemini_api_key: str
+    gemini_api_key: SecretStr
     gemini_model: str
     gemini_temperature: float
     gemini_max_retries: int
@@ -32,4 +34,4 @@ class Settings(BaseSettings):
 
 @cache
 def get_settings() -> Settings:
-    return Settings.model_validate({})
+    return Settings()
