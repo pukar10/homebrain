@@ -1,5 +1,6 @@
 """
 app/api/deps.py
+- Consider adding a request context dependency (trace_id/user/tenant).
 """
 from typing import Any
 from fastapi import Request
