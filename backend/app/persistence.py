@@ -42,7 +42,7 @@ def create_checkpointer_resource(settings: Settings) -> CheckpointerResource:
     """
     db_url = getattr(settings, "langgraph_db_url", None)
     if not db_url:
-        log.info("LangGraph: using InMemorySaver (no langgraph_db_url).")
+        log.info("LangGraph checkpointer mode: InMemorySaver (langgraph_db_url unset).")
         return CheckpointerResource(checkpointer=InMemorySaver())
 
     log.info("LangGraph checkpointer: using PostgresSaver.")
