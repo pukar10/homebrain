@@ -25,52 +25,6 @@ services:
     volumes:
       - homebrain_db:/var/lib/postgresql/data
 
-  ollama:
-    image: ollama/ollama:latest
-    container_name: ollama
-    restart: unless-stopped
-    ports:
-      - "11434:11434"
-    volumes:
-      - /srv/ollama:/root/.ollama
-    environment:
-      - OLLAMA_HOST=0.0.0.0:11434
-      - OLLAMA_KEEP_ALIVE=1h
-    healthcheck:
-      test: ["CMD-SHELL", "ollama list >/dev/null 2>&1 || exit 1"]
-      interval: 10s
-      timeout: 5s
-      retries: 30
-      start_period: 20s
-
-  ollama-init:
-    image: alpine:latest
-    depends_on:
-      ollama:
-        condition: service_healthy
-    entrypoint: ["sh", "-c"]
-    command: |
-      set -e
-      apk add --no-cache curl
-
-      echo "ollama-init starting at $$(date)"
-      echo "Waiting for Ollama API..."
-      until curl -fsS http://ollama:11434/api/tags >/dev/null; do
-        sleep 1
-      done
-
-      echo "Checking for embedding model..."
-      if curl -fsS http://ollama:11434/api/tags | grep -q 'snowflake-arctic-embed:s'; then
-        echo "Model already present."
-        exit 0
-      fi
-
-      echo "Pulling snowflake-arctic-embed:s ..."
-      curl -fsS -X POST http://ollama:11434/api/pull \
-        -H "Content-Type: application/json" \
-        -d '{"model":"snowflake-arctic-embed:s","stream":false}'
-    restart: "no"
-
   backend:
     depends_on:
       ollama-init:
@@ -93,19 +47,6 @@ services:
       - /srv/homebrain/chroma:/data/chroma
       - ./backend:/app
     command: uvicorn app.main:app --host 0.0.0.0 --port 8001 --reload
-
-  ingest:
-    profiles: ["jobs"]
-    build:
-      context: ./backend
-      dockerfile: Dockerfile
-    env_file:
-      - .env
-    restart: "no"
-    volumes:
-      - /srv/homebrain/docs:/data/docs:ro
-      - /srv/homebrain/chroma:/data/chroma
-    command: ["python", "-m", "app.agents.rag.ingest"]
 
 volumes:
   homebrain_db:

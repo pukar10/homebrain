@@ -64,7 +64,6 @@ def build_graph(*, llm: BaseChatModel, checkpointer: Any, cfg: GraphConfig | Non
     # Nodes
     g.add_node("ingest", ingest)
     g.add_node("router", router_node, retry_policy=router_retry)
-
     g.add_node("finalize", finalize)
 
     # Edges
@@ -72,11 +71,6 @@ def build_graph(*, llm: BaseChatModel, checkpointer: Any, cfg: GraphConfig | Non
     g.add_edge("ingest", "router")
 
     # router returns Command(goto=...), so specialists just flow to finalize
-    g.add_edge("personal_agent", "finalize")
-    g.add_edge("projects_agent", "finalize")
-    g.add_edge("homelab_agent", "finalize")
-    g.add_edge("general_agent", "finalize")
-
     g.add_edge("finalize", END)
 
     return g.compile(checkpointer=checkpointer)
