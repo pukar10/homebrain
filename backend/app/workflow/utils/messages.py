@@ -2,8 +2,8 @@
 app/agents/utils/messages.py
 """
 from __future__ import annotations
-from typing import Any, Optional, Sequence, TypedDict
-from langchain_core.messages import AnyMessage, HumanMessage
+from typing import Any, Iterable, Optional, Sequence, TypedDict
+from langchain_core.messages import AnyMessage, AIMessage, HumanMessage, ToolMessage
 from typing import Literal
 
 
@@ -63,14 +63,8 @@ def thread_config(thread_id: str,
 def content_to_text(content:Any, *, mode: ContentMode = "stream") -> str:
     """
     Convert LangChain message content into plain text.
-
-    mode="stream" (default):
-      - strict + safe for user-facing streaming
-      - avoids dumping dict/object reprs into the UI
-
-    mode="debug":
-      - best-effort for logs/diagnostics
-      - falls back to str(content)
+    mode="stream" (default): strict + safe for user streaming
+    mode="debug": logs/diagnostics, falls back to str(content)
     """
     if content is None:
         return ""
@@ -99,9 +93,48 @@ def content_to_text(content:Any, *, mode: ContentMode = "stream") -> str:
     return "" if mode == "stream" else str(content)
 
 
+def message_text(msg: AnyMessage) -> str:
+    return content_to_text(getattr(msg, "content", None)).strip()
+
+
 def last_human_text(messages: list[AnyMessage]) -> str:
     """Return the most recent HumanMessage content as plain text."""
     for msg in reversed(messages):
         if isinstance(msg, HumanMessage):
             return content_to_text(msg.content).strip()
     return ""
+
+
+def last_ai_text(messages: Iterable[AnyMessage]) -> str:
+    """Return the last AIMessage text (trimmed) or ''."""
+    msg = last_ai_message(messages)
+    return message_text(msg) if msg is not None else ""
+
+
+def last_human_message(messages: Iterable[AnyMessage]) -> Optional[HumanMessage]:
+    """Return the last HumanMessage in the iterable, if any."""
+    for msg in reversed(list(messages)):
+        if isinstance(msg, HumanMessage):
+            return msg
+    return None
+
+
+def last_ai_message(messages: Iterable[AnyMessage]) -> Optional[AIMessage]:
+    """Return the last AIMessage in the iterable, if any."""
+    for msg in reversed(list(messages)):
+        if isinstance(msg, AIMessage):
+            return msg
+    return None
+
+
+def last_tool_message(messages: Iterable[AnyMessage]) -> Optional[ToolMessage]:
+    """Return the last ToolMessage in the iterable, if any."""
+    for msg in reversed(list(messages)):
+        if isinstance(msg, ToolMessage):
+            return msg
+    return None
+
+
+def has_messages(state: dict[str, Any]) -> bool:
+    msgs = state.get("messages")
+    return isinstance(msgs, list) and len(msgs) > 0
