@@ -6,7 +6,7 @@ import uuid
 from typing import Generator, Tuple
 from fastapi import HTTPException
 from langchain_core.messages import HumanMessage
-from app.agents.utils.messages import content_to_text, thread_config
+from app.workflow.utils.messages import content_to_text, thread_config
 
 log = logging.getLogger(__name__)
 

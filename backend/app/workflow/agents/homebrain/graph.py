@@ -8,8 +8,8 @@ from dataclasses import dataclass, field
 from typing import Any, Mapping, Sequence
 from langgraph.graph import END, START, StateGraph
 from langgraph.types import RetryPolicy
-from app.persistence import get_checkpointer
-from backend.app.agents.homebrain.state import HomebrainState
+from app.persistence import create_checkpointer
+from app.workflow.agents.homebrain import build_graph
 # Import nodes: ingest, router, finalize
 # Import agents + prompts: personal, projects, homelab, general
 
