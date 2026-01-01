@@ -6,10 +6,9 @@ Build the top-level Homebrain graph (Supervisor + specialist agents) and compile
 import logging
 from dataclasses import dataclass, field
 from typing import Any, Mapping, Sequence
-from langgraph.graph import END, START, StateGraph
+from langgraph.graph import END, START, StateGraph 
 from langgraph.types import RetryPolicy
-from app.persistence import create_checkpointer
-from app.workflow.agents.homebrain import build_graph
+from app.workflow.nodes.router import make_router_node
 # Import nodes: ingest, router, finalize
 # Import agents + prompts: personal, projects, homelab, general
 
@@ -51,32 +50,6 @@ def build_graph(*, llm: Any, checkpointer: Any, cfg: GraphConfig | None = None):
         interrupt_on_ambiguity=cfg.interrupt_on_ambiguity,
     )
 
-    personal_node = make_personal_node(
-        llm=llm,
-        tools=cfg.personal_tools,
-        system_prompt=PERSONAL_SYSTEM_PROMPT,
-        checkpointer=checkpointer,
-    )
-    projects_node = make_projects_node(
-        llm=llm,
-        tools=cfg.projects_tools,
-        system_prompt=PROJECTS_SYSTEM_PROMPT,
-        checkpointer=checkpointer,
-    )
-    homelab_node = make_homelab_node(
-        llm=llm,
-        tools=cfg.homelab_tools,
-        system_prompt=HOMELAB_SYSTEM_PROMPT,
-        checkpointer=checkpointer,
-        interrupt_on=cfg.homelab_interrupt_on or None,
-    )
-    general_node = make_general_node(
-        llm=llm,
-        tools=cfg.general_tools,
-        system_prompt=GENERAL_SYSTEM_PROMPT,
-        checkpointer=checkpointer,
-    )
-
     # Build graph
     g = StateGraph(HomebrainState)
 
@@ -86,11 +59,6 @@ def build_graph(*, llm: Any, checkpointer: Any, cfg: GraphConfig | None = None):
     # Nodes
     g.add_node("ingest", ingest_node)
     g.add_node("router", router_node, retry_policy=router_retry)
-
-    g.add_node("personal_agent", personal_node)
-    g.add_node("projects_agent", projects_node)
-    g.add_node("homelab_agent", homelab_node)
-    g.add_node("general_agent", general_node)
 
     g.add_node("finalize", finalize_node)
 
