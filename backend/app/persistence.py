@@ -35,7 +35,7 @@ class CheckpointerResource:
                 log.exception("failed to close checkpointer")
 
 
-def create_checkpointer(settings: Settings) -> CheckpointerResource:
+def create_checkpointer_resource(settings: Settings) -> CheckpointerResource:
     """
     - InMemorySaver if no DB URL.
     - PostgresSaver if langgraph_db_url is set.
@@ -45,7 +45,7 @@ def create_checkpointer(settings: Settings) -> CheckpointerResource:
         log.info("LangGraph: using InMemorySaver (no langgraph_db_url).")
         return CheckpointerResource(checkpointer=InMemorySaver())
 
-    log.info("LangGraph: using PostgresSaver.")
+    log.info("LangGraph checkpointer: using PostgresSaver.")
     pool = ConnectionPool(
         conninfo=db_url,
         max_size=10,
