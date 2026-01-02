@@ -1,0 +1,25 @@
+{
+  "name": "homebrain",
+  "dockerComposeFile": [
+    "../docker-compose.dev.yaml"
+  ],
+  "service": "backend",
+  "workspaceFolder": "/app",
+  "postCreateCommand": "uv sync --extra dev",
+  "forwardPorts": [8001],
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "ms-python.python",
+        "ms-python.vscode-pylance",
+        "charliermarsh.ruff",
+        "ms-azuretools.vscode-docker",
+        "johnpapa.vscode-peacock"
+      ],
+      "settings": {
+        "peacock.color": "#dd0531",
+        "peacock.remoteColor": "#dd0531"
+      }
+    }
+  }
+}
