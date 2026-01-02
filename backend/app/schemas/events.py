@@ -18,7 +18,8 @@ class DoneEvent(BaseModel):
 class ErrorEvent(BaseModel):
     type: Literal["error"] = "error"
     message: str
+    thread_id: Optional[str] = None
     status: Optional[int] = None
 
 
-SSEEvent = Union[TokenEvent, DoneEvent, ErrorEvent]
+StreamEvent = Union[TokenEvent, DoneEvent, ErrorEvent]
