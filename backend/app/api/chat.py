@@ -6,11 +6,11 @@ import json
 import logging
 import time
 from typing import AsyncIterator
-from fastapi import Depends, APIRouter, HTTPException, Request
+from fastapi import Depends, APIRouter, Request
 from fastapi.responses import StreamingResponse
 from app.api.deps import get_graph
 from app.schemas.api import ChatRequest
-from app.schemas.events import StreamEvent, TokenEvent, DoneEvent, ErrorEvent
+from app.schemas.events import StreamEvent, ErrorEvent
 from app.services.chat import chat_turn_stream
 
 

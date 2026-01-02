@@ -8,8 +8,7 @@ def fake_chat_turn_stream(graph, thread_id, message):
         yield DoneEvent(thread_id=tid)
     return tid, gen()
 
-def test_chat_stream_sends_sse_events(monkeypatch, client):
-    # override graph dep on the app behind the client
+def test_chat_stream(monkeypatch, client):
     app = client.app
     app.dependency_overrides[get_graph] = lambda: object()
 
