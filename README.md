@@ -3,13 +3,16 @@
 ### Local Dev
 
 ```bash
-# Install project dependencies
-pip install -e .
-
 # Fontend React (port 4000)
 npm run dev
 
-# Backend python FastAPI (port 8001)
+# Backend dev setup
+uv sync --frozen --extra dev
+
+# Run tests
+uv run pytest
+
+# Start local Backend (port 8001)
 uvicorn app.main:app --reload --host 0.0.0.0 --port 8001
 
     # Swagger Docs
