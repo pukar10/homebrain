@@ -1,13 +1,19 @@
 .env
 
+# Backend
+*.egg-info/
+*.pyc
+build/
+__pycache__/
+dist/
+.venv/
+
+# Frontend
+node_modules/
+
 # Logs
 logs
 *.log
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-pnpm-debug.log*
-lerna-debug.log*
 
 # Editor directories and files
 .vscode/*
@@ -19,15 +25,3 @@ lerna-debug.log*
 *.njsproj
 *.sln
 *.sw?
-
-# Backend
-backend/.venv/
-backend/__pycache__/
-backend/app/__pycache__/
-backend/app/*/__pycache__/
-
-# Frontend
-frontend/node_modules
-frontend/dist
-frontend/dist-ssr
-frontend/*.local

@@ -1,5 +1,6 @@
 """
 app/api/chat.py
+- Add heartbeat to chat_stream() ?
 """
 import json
 import logging
@@ -43,12 +44,6 @@ async def chat_stream(chat_request: ChatRequest, request: Request, graph=Depends
                     log.info("SSE client disconnected", extra={"thread_id": thread_id})
                     break
                 yield sse(event)
-                
-            # Heartbeat useless make async and move outside loop
-            now = time.monotonic()
-            if now - last_ping > 15:
-                last_ping = now
-                yield ": ping\n\n"
         except Exception:
             log.exception("SSE stream failed", extra={"thread_id": thread_id})
             yield sse(ErrorEvent(message="stream failed", thread_id=thread_id))
