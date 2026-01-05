@@ -1,5 +1,7 @@
 # Homebrain
 
+**Deprecated**: moved to [Homebrain-ai](https://github.com/Homebrain-ai) now a poly-repo project
+
 ### Local Dev
 
 ```bash
