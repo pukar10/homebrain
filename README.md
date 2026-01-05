@@ -1,6 +1,6 @@
 # Homebrain
 
-**Deprecated**: moved to [Homebrain-ai](https://github.com/Homebrain-ai) now a poly-repo project
+### _**Deprecated**_: moved to [Homebrain-ai](https://github.com/Homebrain-ai) now a poly-repo project
 
 ### Local Dev
 
