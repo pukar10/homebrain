@@ -1,0 +1,28 @@
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: system-ui, sans-serif;
+  background: #0f172a;
+  color: #e5e7eb;
+}
+
+main {
+  min-height: 100vh;
+  display: grid;
+  place-content: center;
+  padding: 2rem;
+  text-align: center;
+}
+
+h1 {
+  font-size: 3rem;
+  margin-bottom: 0.5rem;
+}
+
+p {
+  font-size: 1.25rem;
+  color: #94a3b8;
+}
