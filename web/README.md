@@ -2,17 +2,25 @@
 
 ## Getting Started
 
-1. Clone the repo
-2. cd web/
-3. Install dependencies: `npm install`
-4. Start dev server: `npm run dev`  
-5. Make edits/changes
-6. Run checks before committing: `npm run check`
-    - TypeScript check
-    - ESLint
-    - Prettier format check
-    - Production build
-7. Format code if needed: `npm run format` and run checks again `npm run check`
+```bash
+# 1. Clone repo
+git clone https://github.com/pukar10/homebrain.git
+
+# 2. Install dependencies
+cd web/
+npm install
+
+# 3. Start dev server
+npm run dev
+
+# 4. Run checks (TypeScript check, ESLint, Prettier, Build)
+npm run check
+
+# 5. Format code
+npm run format
+
+# 6 Re-run checks from 5. if needed
+```
 
 - [ ] figure out more useful way to use `Makefile`.
 
