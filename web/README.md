@@ -47,6 +47,7 @@ homebrain/
     ├── .gitignore
     ├── .prettierignore           // Files/folders Prettier should not format
     ├── .prettierrc.json          // Prettier formatting rules
+    ├── AGENTS.md                 // Instructions for AI coding agents working in this app
     ├── eslint.config.mjs         // Code checker settings
     ├── Makefile                  // Shortcut commands for common npm scripts
     ├── next-env.d.ts             // Auto-generated TypeScript support for Next.js; do not edit
